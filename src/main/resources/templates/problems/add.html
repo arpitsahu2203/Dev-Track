@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout(~{::main}, 'problems')}">
+<body>
+<main class="mx-auto max-w-3xl px-6 py-12">
+    <section class="rounded-2xl border border-white/10 bg-white/5 p-8">
+        <p class="text-sm font-semibold uppercase tracking-[0.25em] text-cyan-300">Save Problem</p>
+        <h1 class="mt-3 text-3xl font-bold">Add a DSA problem to your journey.</h1>
+
+        <p th:if="${successMessage}" th:text="${successMessage}" class="mt-6 rounded-lg border border-emerald-400/20 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-200"></p>
+        <p th:if="${errorMessage}" th:text="${errorMessage}" class="mt-6 rounded-lg border border-rose-400/20 bg-rose-400/10 px-4 py-3 text-sm text-rose-200"></p>
+
+        <form th:action="@{/problems/add}" th:object="${problemForm}" method="post" class="mt-8 space-y-5">
+            <div>
+                <label for="problemName" class="mb-2 block text-sm font-medium text-slate-200">Problem Name</label>
+                <input id="problemName" type="text" th:field="*{problemName}" class="w-full rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-300">
+                <p th:if="${#fields.hasErrors('problemName')}" th:errors="*{problemName}" class="mt-2 text-sm text-rose-300"></p>
+            </div>
+
+            <div>
+                <label for="hardnessLevel" class="mb-2 block text-sm font-medium text-slate-200">Hardness Level</label>
+                <select id="hardnessLevel" th:field="*{hardnessLevel}" class="w-full rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-300">
+                    <option value="">Select difficulty</option>
+                    <option th:each="level : ${hardnessLevels}" th:value="${level}" th:text="${level}"></option>
+                </select>
+                <p th:if="${#fields.hasErrors('hardnessLevel')}" th:errors="*{hardnessLevel}" class="mt-2 text-sm text-rose-300"></p>
+            </div>
+
+            <div>
+                <label for="platform" class="mb-2 block text-sm font-medium text-slate-200">Platform</label>
+                <input id="platform" type="text" th:field="*{platform}" placeholder="LeetCode, GFG, Codeforces..." class="w-full rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-300">
+                <p th:if="${#fields.hasErrors('platform')}" th:errors="*{platform}" class="mt-2 text-sm text-rose-300"></p>
+            </div>
+
+            <div>
+                <label for="topic" class="mb-2 block text-sm font-medium text-slate-200">Topic / Tag</label>
+                <input id="topic" type="text" th:field="*{topic}" placeholder="Array, DP, Graph..." class="w-full rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-300">
+            </div>
+
+            <div>
+                <label for="problemLink" class="mb-2 block text-sm font-medium text-slate-200">Problem Link</label>
+                <input id="problemLink" type="url" th:field="*{problemLink}" class="w-full rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-300">
+                <p th:if="${#fields.hasErrors('problemLink')}" th:errors="*{problemLink}" class="mt-2 text-sm text-rose-300"></p>
+            </div>
+
+            <div>
+                <label for="problemDescription" class="mb-2 block text-sm font-medium text-slate-200">Problem Description</label>
+                <textarea id="problemDescription" rows="5" th:field="*{problemDescription}" class="w-full rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-300"></textarea>
+                <p th:if="${#fields.hasErrors('problemDescription')}" th:errors="*{problemDescription}" class="mt-2 text-sm text-rose-300"></p>
+            </div>
+
+            <div class="grid gap-5 md:grid-cols-2">
+                <div>
+                    <label for="timeTakenToSolve" class="mb-2 block text-sm font-medium text-slate-200">Time Taken (minutes)</label>
+                    <input id="timeTakenToSolve" type="number" min="0" th:field="*{timeTakenToSolve}" class="w-full rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-300">
+                </div>
+
+                <div>
+                    <label for="dateSolved" class="mb-2 block text-sm font-medium text-slate-200">Date Solved</label>
+                    <input id="dateSolved" type="date" th:field="*{dateSolved}" class="w-full rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-300">
+                </div>
+            </div>
+
+            <div class="grid gap-5 md:grid-cols-2">
+                <div>
+                    <label for="attemptsTaken" class="mb-2 block text-sm font-medium text-slate-200">Attempts Taken</label>
+                    <input id="attemptsTaken" type="number" min="1" th:field="*{attemptsTaken}" class="w-full rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-300">
+                </div>
+
+                <label class="flex items-center gap-3 rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-sm font-medium text-slate-200">
+                    <input type="checkbox" th:field="*{revisit}" class="h-4 w-4 rounded border-white/20 bg-slate-950">
+                    Mark for revisit
+                </label>
+            </div>
+
+            <button type="submit" class="w-full rounded-lg bg-cyan-400 px-5 py-3 font-semibold text-slate-950 hover:bg-cyan-300">Save Problem</button>
+        </form>
+    </section>
+</main>
+</body>
+</html>

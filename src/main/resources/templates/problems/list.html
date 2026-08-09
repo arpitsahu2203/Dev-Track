@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout(~{::main}, 'problems')}">
+<body>
+<main class="px-6 py-10">
+    <section class="mx-auto max-w-6xl">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+                <p class="text-sm font-semibold uppercase tracking-[0.25em] text-cyan-300">Dashboard</p>
+                <h1 class="mt-2 text-3xl font-bold">My Problems</h1>
+            </div>
+            <a th:href="@{/problems/add}" class="rounded-lg bg-cyan-400 px-5 py-3 text-sm font-semibold text-slate-950 hover:bg-cyan-300">Add Problem</a>
+        </div>
+
+        <p th:if="${successMessage}" th:text="${successMessage}" class="mt-6 rounded-lg border border-emerald-400/20 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-200"></p>
+
+        <section class="mt-8 grid gap-4 md:grid-cols-4">
+            <div class="counter-card rounded-2xl border border-white/10 bg-white/5 p-5 text-center" th:data-count="${totalCount}">
+                <div class="relative mx-auto h-28 w-28">
+                    <svg class="h-full w-full -rotate-90" viewBox="0 0 120 120">
+                        <circle cx="60" cy="60" r="52" stroke="rgba(255,255,255,0.12)" stroke-width="10" fill="none"></circle>
+                        <circle class="progress-ring" cx="60" cy="60" r="52" stroke="#22d3ee" stroke-width="10" fill="none" stroke-linecap="round"></circle>
+                    </svg>
+                    <span class="counter-number absolute inset-0 grid place-items-center text-2xl font-bold" th:text="${totalCount}">0</span>
+                </div>
+                <p class="mt-3 text-sm text-slate-300">Total Solved</p>
+            </div>
+            <div class="counter-card rounded-2xl border border-white/10 bg-white/5 p-5 text-center" th:data-count="${easyCount}">
+                <div class="relative mx-auto h-24 w-24">
+                    <svg class="h-full w-full -rotate-90" viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" stroke="rgba(255,255,255,0.12)" stroke-width="10" fill="none"></circle><circle class="progress-ring" cx="60" cy="60" r="52" stroke="#34d399" stroke-width="10" fill="none" stroke-linecap="round"></circle></svg>
+                    <span class="counter-number absolute inset-0 grid place-items-center text-xl font-bold" th:text="${easyCount}">0</span>
+                </div>
+                <p class="mt-3 text-sm text-slate-300">Easy</p>
+            </div>
+            <div class="counter-card rounded-2xl border border-white/10 bg-white/5 p-5 text-center" th:data-count="${mediumCount}">
+                <div class="relative mx-auto h-24 w-24">
+                    <svg class="h-full w-full -rotate-90" viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" stroke="rgba(255,255,255,0.12)" stroke-width="10" fill="none"></circle><circle class="progress-ring" cx="60" cy="60" r="52" stroke="#fbbf24" stroke-width="10" fill="none" stroke-linecap="round"></circle></svg>
+                    <span class="counter-number absolute inset-0 grid place-items-center text-xl font-bold" th:text="${mediumCount}">0</span>
+                </div>
+                <p class="mt-3 text-sm text-slate-300">Medium</p>
+            </div>
+            <div class="counter-card rounded-2xl border border-white/10 bg-white/5 p-5 text-center" th:data-count="${hardCount}">
+                <div class="relative mx-auto h-24 w-24">
+                    <svg class="h-full w-full -rotate-90" viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" stroke="rgba(255,255,255,0.12)" stroke-width="10" fill="none"></circle><circle class="progress-ring" cx="60" cy="60" r="52" stroke="#fb7185" stroke-width="10" fill="none" stroke-linecap="round"></circle></svg>
+                    <span class="counter-number absolute inset-0 grid place-items-center text-xl font-bold" th:text="${hardCount}">0</span>
+                </div>
+                <p class="mt-3 text-sm text-slate-300">Hard</p>
+            </div>
+        </section>
+
+        <form th:action="@{/problems}" method="get" class="mt-8 grid gap-4 rounded-2xl border border-white/10 bg-white/5 p-5 md:grid-cols-3">
+            <select name="difficulty" class="rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-white">
+                <option value="">All difficulties</option>
+                <option th:each="level : ${hardnessLevels}" th:value="${level}" th:text="${level}" th:selected="${difficulty == level.name()}"></option>
+            </select>
+            <input name="platform" th:value="${platform}" placeholder="Platform" class="rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-white">
+            <input name="topic" th:value="${topic}" placeholder="Topic / tag" class="rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-white">
+            <input name="dateAdded" th:value="${dateAdded}" type="date" class="rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-white">
+            <select name="revisit" class="rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-white">
+                <option value="">Revisit: Any</option>
+                <option value="true" th:selected="${revisit == true}">Yes</option>
+                <option value="false" th:selected="${revisit == false}">No</option>
+            </select>
+            <select name="attemptsGreaterThan" class="rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-white">
+                <option value="">Attempts: Any</option>
+                <option th:each="n : ${#numbers.sequence(1,4)}" th:value="${n}" th:text="${'>' + n}" th:selected="${attemptsGreaterThan == n}"></option>
+            </select>
+            <button type="submit" class="rounded-lg bg-cyan-400 px-5 py-3 font-semibold text-slate-950 hover:bg-cyan-300 md:col-span-3">Apply Filters</button>
+        </form>
+
+        <section class="mt-8 grid gap-4">
+            <article th:each="problem : ${problems}" class="problem-card rounded-2xl border border-white/10 bg-white/5 p-5">
+                <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                        <div class="flex flex-wrap items-center gap-3">
+                            <span class="grid h-9 w-9 place-items-center rounded-full bg-slate-950 text-xs font-bold text-cyan-300"
+                                  th:title="${problem.platform}"
+                                  th:text="${#strings.containsIgnoreCase(problem.platform, 'leetcode') ? 'LC' : (#strings.containsIgnoreCase(problem.platform, 'codechef') ? 'CC' : (#strings.containsIgnoreCase(problem.platform, 'geeks') || #strings.containsIgnoreCase(problem.platform, 'gfg') ? 'GFG' : (#strings.containsIgnoreCase(problem.platform, 'hacker') ? 'HR' : (#strings.containsIgnoreCase(problem.platform, 'codeforces') ? 'CF' : #strings.substring(problem.platform,0,1)))))}">L</span>
+                            <h2 class="text-xl font-semibold" th:text="${problem.problemName}">Problem</h2>
+                            <span class="rounded-full px-3 py-1 text-xs font-semibold"
+                                  th:classappend="${problem.hardnessLevel.name() == 'EASY'} ? ' bg-emerald-400/15 text-emerald-300' : (${problem.hardnessLevel.name() == 'MEDIUM'} ? ' bg-amber-400/15 text-amber-300' : ' bg-rose-400/15 text-rose-300')"
+                                  th:text="${problem.hardnessLevel}">Easy</span>
+                        </div>
+                        <p class="mt-3 text-sm leading-6 text-slate-400" th:text="${problem.problemDescription}">Description</p>
+                        <p class="mt-3 text-sm text-slate-300">
+                            <span th:text="${problem.platform}">Platform</span>
+                            <span> - </span>
+                            <span th:text="${problem.topic ?: 'No topic'}">Topic</span>
+                            <span> - Attempts: </span>
+                            <span th:text="${problem.attemptsTaken}">1</span>
+                        </p>
+                        <div class="mt-3 flex flex-wrap gap-2 text-xs text-slate-300">
+                            <span class="rounded-full bg-slate-950 px-3 py-1">Added: <span th:text="${problem.dateAdded ?: 'Not set'}">Today</span></span>
+                            <span class="rounded-full bg-slate-950 px-3 py-1">Solved: <span th:text="${problem.dateSolved ?: 'Pending'}">Pending</span></span>
+                            <span class="rounded-full bg-slate-950 px-3 py-1">Time: <span th:text="${problem.timeTakenToSolve != null ? problem.timeTakenToSolve + ' min' : 'Not set'}">0 min</span></span>
+                            <span class="rounded-full px-3 py-1" th:classappend="${problem.revisit} ? ' bg-amber-400/15 text-amber-300' : ' bg-slate-950 text-slate-300'" th:text="${problem.revisit ? 'Revisit' : 'No revisit'}">Revisit</span>
+                        </div>
+                    </div>
+                    <a th:href="${problem.problemLink}" target="_blank" class="rounded-lg border border-white/10 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10">Open</a>
+                </div>
+            </article>
+            <p th:if="${#lists.isEmpty(problems)}" class="rounded-2xl border border-white/10 bg-white/5 p-8 text-center text-slate-300">No problems match these filters yet.</p>
+        </section>
+    </section>
+
+    <script>
+        gsap.from(".problem-card", { opacity: 0, y: 16, duration: 0.45, stagger: 0.08 });
+        document.querySelectorAll(".counter-card").forEach(function(card) {
+            const ring = card.querySelector(".progress-ring");
+            const count = Number(card.dataset.count || 0);
+            const circumference = 2 * Math.PI * 52;
+            ring.style.strokeDasharray = circumference;
+            ring.style.strokeDashoffset = circumference;
+            gsap.to(ring, { strokeDashoffset: Math.max(circumference - Math.min(count, 100) / 100 * circumference, 0), duration: 0.8 });
+        });
+    </script>
+</main>
+</body>
+</html>

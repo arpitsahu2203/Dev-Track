@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout(~{::main}, 'about')}">
+<body>
+<main class="mx-auto max-w-5xl px-6 py-16">
+    <section class="max-w-3xl">
+        <p class="mb-4 text-sm font-semibold uppercase tracking-[0.25em] text-cyan-300">
+            Built For DSA Practice
+        </p>
+        <h1 class="text-4xl font-bold leading-tight sm:text-5xl">
+            One place for your problems, links, platforms, and revision notes.
+        </h1>
+        <p class="mt-6 text-lg leading-8 text-slate-300">
+            Dev Tracker helps you build a clear record of your data structures and algorithms journey.
+            Add problems from any coding platform, mark their difficulty, store the original link,
+            and keep a short description so you can revise smarter.
+        </p>
+    </section>
+
+    <section class="mt-12 grid gap-5 md:grid-cols-3">
+        <div class="rounded-xl border border-white/10 bg-white/5 p-5">
+            <h2 class="text-lg font-semibold">Add Problems</h2>
+            <p class="mt-3 text-sm leading-6 text-slate-400">
+                Store problem name, platform, link, description, and difficulty level.
+            </p>
+        </div>
+        <div class="rounded-xl border border-white/10 bg-white/5 p-5">
+            <h2 class="text-lg font-semibold">Organize Progress</h2>
+            <p class="mt-3 text-sm leading-6 text-slate-400">
+                Keep solved problems connected to your account and review them by platform or level.
+            </p>
+        </div>
+        <div class="rounded-xl border border-white/10 bg-white/5 p-5">
+            <h2 class="text-lg font-semibold">Revise Smarter</h2>
+            <p class="mt-3 text-sm leading-6 text-slate-400">
+                Return to saved descriptions and links when preparing for interviews or contests.
+            </p>
+        </div>
+    </section>
+
+    <section class="mt-12 rounded-2xl border border-white/10 bg-white/5 p-6">
+        <h2 class="text-2xl font-bold">What You Can Track</h2>
+        <div class="mt-6 grid gap-4 sm:grid-cols-2">
+            <div class="rounded-lg bg-slate-950 p-4">
+                <p class="font-semibold text-cyan-300">Problem Details</p>
+                <p class="mt-2 text-sm leading-6 text-slate-400">
+                    Name, platform, link, description, and difficulty level.
+                </p>
+            </div>
+            <div class="rounded-lg bg-slate-950 p-4">
+                <p class="font-semibold text-cyan-300">Platform Coverage</p>
+                <p class="mt-2 text-sm leading-6 text-slate-400">
+                    LeetCode, GFG, Codeforces, CodeChef, HackerRank, AtCoder, or custom sources.
+                </p>
+            </div>
+            <div class="rounded-lg bg-slate-950 p-4">
+                <p class="font-semibold text-cyan-300">Difficulty Balance</p>
+                <p class="mt-2 text-sm leading-6 text-slate-400">
+                    Easy, medium, and hard distribution for better preparation planning.
+                </p>
+            </div>
+            <div class="rounded-lg bg-slate-950 p-4">
+                <p class="font-semibold text-cyan-300">Personal Journey</p>
+                <p class="mt-2 text-sm leading-6 text-slate-400">
+                    Each user keeps their own saved problem list connected to their email.
+                </p>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>
