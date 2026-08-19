@@ -40,4 +40,6 @@ src/main/resources/*local*.properties
 # Local Spring Boot configuration overrides
 src/main/resources/application-*.properties
 src/main/resources/*local*.properties
+secret.txt
+client_secret_*.json
 

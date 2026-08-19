@@ -6,6 +6,7 @@ Dev Tracker is a Spring Boot web application for tracking coding problems you so
 
 - User registration and email/password login
 - OAuth2 login with Google and GitHub
+- First OAuth login automatically creates a local account from the provider's verified email
 - Add and manage solved coding problems
 - Store problem details such as platform, topic, difficulty, solve date, attempts, revisit status, and notes
 - Filter problem history by difficulty, platform, topic, date, revisit status, and attempt count
@@ -42,6 +43,8 @@ Before running the app, update the following values for your environment:
 - `spring.security.oauth2.client.registration.google.client-secret`
 - `spring.security.oauth2.client.registration.github.client-id`
 - `spring.security.oauth2.client.registration.github.client-secret`
+
+For GitHub login, keep `user:email` scope enabled so Dev Tracker can map your GitHub account to your registered email.
 
 Note: do not commit real credentials to version control. Use environment variables or a local override file if possible.
 

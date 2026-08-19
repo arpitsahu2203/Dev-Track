@@ -28,13 +28,29 @@
 
             <div>
                 <label for="platform" class="mb-2 block text-sm font-medium text-slate-200">Platform</label>
-                <input id="platform" type="text" th:field="*{platform}" placeholder="LeetCode, GFG, Codeforces..." class="w-full rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-300">
+                <select id="platform" th:field="*{platform}" class="w-full rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-300">
+                    <option value="">Select platform</option>
+                    <option th:each="platformOption : ${platforms}" th:value="${platformOption}" th:text="${platformOption}"></option>
+                </select>
                 <p th:if="${#fields.hasErrors('platform')}" th:errors="*{platform}" class="mt-2 text-sm text-rose-300"></p>
             </div>
 
             <div>
-                <label for="topic" class="mb-2 block text-sm font-medium text-slate-200">Topic / Tag</label>
-                <input id="topic" type="text" th:field="*{topic}" placeholder="Array, DP, Graph..." class="w-full rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-300">
+                <div class="mb-2 flex items-baseline justify-between gap-3">
+                    <label class="block text-sm font-medium text-slate-200">Topics</label>
+                    <span class="text-xs text-slate-400">Choose all that apply</span>
+                </div>
+                <div class="space-y-4 rounded-lg border border-white/10 bg-slate-950 p-4">
+                    <section th:each="tagGroup : ${tagGroups}">
+                        <h2 class="mb-2 text-xs font-semibold uppercase tracking-wider text-cyan-300" th:text="${tagGroup.key}">Fundamental</h2>
+                        <div class="flex flex-wrap gap-2">
+                            <label th:each="tag : ${tagGroup.value}" class="cursor-pointer">
+                                <input type="checkbox" th:field="*{topics}" th:value="${tag}" class="peer sr-only">
+                                <span class="inline-flex rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-slate-300 transition hover:border-cyan-300 hover:text-white peer-checked:border-cyan-300 peer-checked:bg-cyan-400/15 peer-checked:text-cyan-100" th:text="${tag}">Array</span>
+                            </label>
+                        </div>
+                    </section>
+                </div>
             </div>
 
             <div>

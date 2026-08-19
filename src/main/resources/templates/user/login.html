@@ -8,7 +8,7 @@
         <h1 class="mt-3 text-3xl font-bold">Login to your tracker.</h1>
 
         <p th:if="${param.error}" class="mt-6 rounded-lg border border-rose-400/20 bg-rose-400/10 px-4 py-3 text-sm text-rose-200">Invalid email or password.</p>
-        <p th:if="${param.oauthError}" class="mt-6 rounded-lg border border-rose-400/20 bg-rose-400/10 px-4 py-3 text-sm text-rose-200">OAuth login failed. Please try again.</p>
+        <p th:if="${param.oauthError}" class="mt-6 rounded-lg border border-rose-400/20 bg-rose-400/10 px-4 py-3 text-sm text-rose-200">We could not retrieve a verified email from your sign-in provider. For GitHub, add a verified email and allow the user:email scope, then try again.</p>
         <p th:if="${errorMessage}" th:text="${errorMessage}" class="mt-6 rounded-lg border border-rose-400/20 bg-rose-400/10 px-4 py-3 text-sm text-rose-200"></p>
         <p th:if="${param.logout}" class="mt-6 rounded-lg border border-emerald-400/20 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-200">You have been logged out.</p>
         <p th:if="${successMessage}" th:text="${successMessage}" class="mt-6 rounded-lg border border-emerald-400/20 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-200"></p>

@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.Arrays;
 
 @Service
 public class ProblemServiceImplementation implements ProblemService {
@@ -56,7 +57,8 @@ public class ProblemServiceImplementation implements ProblemService {
                 .filter(problem -> platform == null || platform.isBlank()
                         || problem.getPlatform().equalsIgnoreCase(platform))
                 .filter(problem -> topic == null || topic.isBlank()
-                        || (problem.getTopic() != null && problem.getTopic().equalsIgnoreCase(topic)))
+                        || (problem.getTopic() != null && Arrays.stream(problem.getTopic().split("\\s*,\\s*"))
+                        .anyMatch(savedTopic -> savedTopic.equalsIgnoreCase(topic))))
                 .filter(problem -> dateAdded == null || dateAdded.equals(problem.getDateAdded()))
                 .filter(problem -> revisit == null || problem.isRevisit() == revisit)
                 .filter(problem -> attemptsGreaterThan == null

@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -35,5 +37,14 @@ public class ProblemForm {
 
     private Integer attemptsTaken = 1;
 
+    /**
+     * Selected from the curated topic chips in the add-problem form.
+     * The entity persists these as one comma-separated value for backwards compatibility.
+     */
+    private List<String> topics = new ArrayList<>();
+
+    /**
+     * Retained for compatibility with existing code and previously saved single-topic problems.
+     */
     private String topic;
 }

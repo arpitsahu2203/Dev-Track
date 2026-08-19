@@ -4,6 +4,7 @@ import com.devtracker.entities.User;
 import com.devtracker.form.LoginForm;
 import com.devtracker.form.UserForm;
 import com.devtracker.services.UserService;
+import com.devtracker.support.EmailNormalizer;
 import jakarta.validation.Valid;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -40,8 +41,11 @@ public class AuthController {
             RedirectAttributes redirectAttributes
     ) {
         model.addAttribute("pageTitle", "Register");
+        String normalizedEmail = EmailNormalizer.normalize(userForm.getEmail());
+        userForm.setEmail(normalizedEmail);
 
-        if (userService.getUserByEmail(userForm.getEmail()).isPresent()) {
+        if (!bindingResult.hasFieldErrors("email") && normalizedEmail != null
+                && userService.getUserByEmail(normalizedEmail).isPresent()) {
             bindingResult.rejectValue("email", "email.exists", "An account with this email already exists");
         }
 
@@ -69,4 +73,5 @@ public class AuthController {
         model.addAttribute("loginForm", new LoginForm());
         return "user/login";
     }
+
 }

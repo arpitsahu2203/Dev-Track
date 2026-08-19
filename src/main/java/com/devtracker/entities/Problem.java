@@ -49,7 +49,7 @@ public class Problem {
     private String problemLink;
 
     @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String problemDescription;
 
     private Integer timeTakenToSolve;
