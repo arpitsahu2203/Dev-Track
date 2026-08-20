@@ -23,4 +23,10 @@ public class PageController {
         model.addAttribute("pageTitle", "About");
         return "about";
     }
+
+    @GetMapping("/devtracker/services")
+    public String services(Model model) { model.addAttribute("pageTitle", "Features"); return "services"; }
+
+    @GetMapping("/devtracker/contact")
+    public String contact(Model model) { model.addAttribute("pageTitle", "Contact"); return "contact"; }
 }

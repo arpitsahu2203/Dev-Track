@@ -75,7 +75,7 @@
             <button type="submit" class="rounded-lg bg-cyan-400 px-5 py-3 font-semibold text-slate-950 hover:bg-cyan-300 md:col-span-3">Apply Filters</button>
         </form>
 
-        <section class="mt-8 grid gap-4">
+        <section id="problem-list" class="mt-8 grid gap-4">
             <article th:each="problem : ${problems}" class="problem-card rounded-2xl border border-white/10 bg-white/5 p-5">
                 <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                     <div>
@@ -102,7 +102,7 @@
                             <span class="rounded-full bg-slate-950 px-3 py-1">Time: <span th:text="${problem.timeTakenToSolve != null ? problem.timeTakenToSolve + ' min' : 'Not set'}">0 min</span></span>
                             <span class="rounded-full px-3 py-1" th:classappend="${problem.revisit} ? ' bg-amber-400/15 text-amber-300' : ' bg-slate-950 text-slate-300'" th:text="${problem.revisit ? 'Revisit' : 'No revisit'}">Revisit</span>
                         </div>
-                        <section th:with="aiReview=${aiReviewsByProblemId[problem.id]}" class="mt-5 rounded-xl border border-violet-400/20 bg-violet-400/5 p-4">
+                        <section th:with="aiReview=${aiReviewsByProblemId[problem.id]}" class="ai-review-panel mt-5 rounded-xl border p-4">
                             <div class="flex flex-wrap items-center justify-between gap-3">
                                 <div>
                                     <p class="text-xs font-semibold uppercase tracking-wider text-violet-300">AI Revision Coach</p>
@@ -131,6 +131,7 @@
             </article>
             <p th:if="${#lists.isEmpty(problems)}" class="rounded-2xl border border-white/10 bg-white/5 p-8 text-center text-slate-300">No problems match these filters yet.</p>
         </section>
+        <nav id="problem-pagination" class="mt-6 flex items-center justify-between gap-4" aria-label="Problem list pagination"></nav>
     </section>
 
     <script>
