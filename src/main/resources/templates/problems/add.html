@@ -1,97 +1,167 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{base :: layout(~{::main}, 'problems')}">
+      th:replace="~{base :: layout(~{::main}, 'add')}">
 <body>
-<main class="mx-auto max-w-3xl px-6 py-12">
-    <section class="rounded-2xl border border-white/10 bg-white/5 p-8">
-        <p class="text-sm font-semibold uppercase tracking-[0.25em] text-cyan-300">Save Problem</p>
-        <h1 class="mt-3 text-3xl font-bold">Add a DSA problem to your journey.</h1>
-
-        <p th:if="${successMessage}" th:text="${successMessage}" class="mt-6 rounded-lg border border-emerald-400/20 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-200"></p>
-        <p th:if="${errorMessage}" th:text="${errorMessage}" class="mt-6 rounded-lg border border-rose-400/20 bg-rose-400/10 px-4 py-3 text-sm text-rose-200"></p>
-
-        <form th:action="@{/problems/add}" th:object="${problemForm}" method="post" class="mt-8 space-y-5">
+<main class="px-4 py-8 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-4xl space-y-6">
+        
+        <!-- Header -->
+        <div class="flex items-center justify-between border-b border-slate-200 pb-4 dark:border-slate-800">
             <div>
-                <label for="problemName" class="mb-2 block text-sm font-medium text-slate-200">Problem Name</label>
-                <input id="problemName" type="text" th:field="*{problemName}" class="w-full rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-300">
-                <p th:if="${#fields.hasErrors('problemName')}" th:errors="*{problemName}" class="mt-2 text-sm text-rose-300"></p>
+                <span class="font-mono text-[11px] font-bold uppercase tracking-widest text-cyan-600 dark:text-cyan-400">Tactical Ingestion</span>
+                <h1 class="mt-1 font-mono text-2xl font-extrabold tracking-tight sm:text-3xl">Log Solved Problem</h1>
+                <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Capture the approach and context while your algorithmic intuition is fresh.</p>
             </div>
+            <a th:href="@{/problems}" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-100 dark:border-slate-800 dark:text-slate-400 dark:hover:bg-slate-800">
+                Cancel
+            </a>
+        </div>
 
-            <div>
-                <label for="hardnessLevel" class="mb-2 block text-sm font-medium text-slate-200">Hardness Level</label>
-                <select id="hardnessLevel" th:field="*{hardnessLevel}" class="w-full rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-300">
-                    <option value="">Select difficulty</option>
-                    <option th:each="level : ${hardnessLevels}" th:value="${level}" th:text="${level}"></option>
-                </select>
-                <p th:if="${#fields.hasErrors('hardnessLevel')}" th:errors="*{hardnessLevel}" class="mt-2 text-sm text-rose-300"></p>
-            </div>
-
-            <div>
-                <label for="platform" class="mb-2 block text-sm font-medium text-slate-200">Platform</label>
-                <select id="platform" th:field="*{platform}" class="w-full rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-300">
-                    <option value="">Select platform</option>
-                    <option th:each="platformOption : ${platforms}" th:value="${platformOption}" th:text="${platformOption}"></option>
-                </select>
-                <p th:if="${#fields.hasErrors('platform')}" th:errors="*{platform}" class="mt-2 text-sm text-rose-300"></p>
-            </div>
-
-            <div>
-                <div class="mb-2 flex items-baseline justify-between gap-3">
-                    <label class="block text-sm font-medium text-slate-200">Topics</label>
-                    <span class="text-xs text-slate-400">Choose all that apply</span>
+        <!-- Submission Form -->
+        <form th:action="@{/problems/add}" th:object="${problemForm}" method="post" class="space-y-6">
+            
+            <!-- SECTION 1: SOURCE & PROBLEM METADATA -->
+            <div class="tactical-card p-6 space-y-5">
+                <div class="flex items-center gap-2 border-b border-slate-100 pb-3 dark:border-slate-800">
+                    <span class="grid h-6 w-6 place-items-center rounded-md bg-cyan-500/10 font-mono text-xs font-bold text-cyan-600 dark:text-cyan-400">01</span>
+                    <h2 class="font-mono text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white">Source & Identity</h2>
                 </div>
-                <div class="space-y-4 rounded-lg border border-white/10 bg-slate-950 p-4">
-                    <section th:each="tagGroup : ${tagGroups}">
-                        <h2 class="mb-2 text-xs font-semibold uppercase tracking-wider text-cyan-300" th:text="${tagGroup.key}">Fundamental</h2>
+
+                <!-- Problem URL Input with Auto-Detect -->
+                <div>
+                    <label for="problemLink" class="mb-1.5 flex items-center justify-between font-mono text-xs font-semibold text-slate-700 dark:text-slate-300">
+                        <span>Problem URL</span>
+                        <span class="font-mono text-[10px] text-cyan-600 dark:text-cyan-400">Auto-detects platform & name</span>
+                    </label>
+                    <input id="problemLink" type="url" th:field="*{problemLink}" 
+                           placeholder="https://leetcode.com/problems/trapping-rain-water/"
+                           class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:border-cyan-500 focus:bg-white focus:ring-1 focus:ring-cyan-500 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500 dark:focus:bg-slate-900">
+                    <p th:if="${#fields.hasErrors('problemLink')}" th:errors="*{problemLink}" class="mt-1 font-mono text-xs text-rose-500"></p>
+                </div>
+
+                <!-- Platform & Problem Name Grid -->
+                <div class="grid gap-4 sm:grid-cols-2">
+                    <div>
+                        <label for="platform" class="mb-1.5 block font-mono text-xs font-semibold text-slate-700 dark:text-slate-300">Platform</label>
+                        <select id="platform" th:field="*{platform}" 
+                                class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-xs text-slate-900 focus:border-cyan-500 focus:bg-white focus:ring-1 focus:ring-cyan-500 dark:border-slate-800 dark:bg-slate-900 dark:text-white">
+                            <option value="">Select Platform</option>
+                            <option th:each="p : ${platforms}" th:value="${p}" th:text="${p}"></option>
+                        </select>
+                        <p th:if="${#fields.hasErrors('platform')}" th:errors="*{platform}" class="mt-1 font-mono text-xs text-rose-500"></p>
+                    </div>
+
+                    <div>
+                        <label for="problemName" class="mb-1.5 block font-mono text-xs font-semibold text-slate-700 dark:text-slate-300">Problem Name</label>
+                        <input id="problemName" type="text" th:field="*{problemName}" 
+                               placeholder="e.g. Trapping Rain Water"
+                               class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:border-cyan-500 focus:bg-white focus:ring-1 focus:ring-cyan-500 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500 dark:focus:bg-slate-900">
+                        <p th:if="${#fields.hasErrors('problemName')}" th:errors="*{problemName}" class="mt-1 font-mono text-xs text-rose-500"></p>
+                    </div>
+                </div>
+
+                <!-- Difficulty Selection -->
+                <div>
+                    <label for="hardnessLevel" class="mb-1.5 block font-mono text-xs font-semibold text-slate-700 dark:text-slate-300">Difficulty Rating</label>
+                    <select id="hardnessLevel" th:field="*{hardnessLevel}" 
+                            class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-xs text-slate-900 focus:border-cyan-500 focus:bg-white focus:ring-1 focus:ring-cyan-500 dark:border-slate-800 dark:bg-slate-900 dark:text-white">
+                        <option value="">Select Hardness</option>
+                        <option th:each="level : ${hardnessLevels}" th:value="${level}" th:text="${level}"></option>
+                    </select>
+                    <p th:if="${#fields.hasErrors('hardnessLevel')}" th:errors="*{hardnessLevel}" class="mt-1 font-mono text-xs text-rose-500"></p>
+                </div>
+            </div>
+
+            <!-- SECTION 2: TOPIC TAGGING -->
+            <div class="tactical-card p-6 space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
+                    <div class="flex items-center gap-2">
+                        <span class="grid h-6 w-6 place-items-center rounded-md bg-cyan-500/10 font-mono text-xs font-bold text-cyan-600 dark:text-cyan-400">02</span>
+                        <h2 class="font-mono text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white">Algorithmic Topics</h2>
+                    </div>
+                    <span class="text-[11px] text-slate-400">Select all applicable categories</span>
+                </div>
+
+                <!-- Grouped Tag Grid -->
+                <div class="space-y-4 rounded-xl border border-slate-100 bg-slate-50/60 p-4 dark:border-slate-800 dark:bg-slate-900/40">
+                    <section th:each="tagGroup : ${tagGroups}" class="space-y-2">
+                        <h3 class="font-mono text-[10px] font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400" 
+                            th:text="${tagGroup.key}">Category</h3>
                         <div class="flex flex-wrap gap-2">
                             <label th:each="tag : ${tagGroup.value}" class="cursor-pointer">
                                 <input type="checkbox" th:field="*{topics}" th:value="${tag}" class="peer sr-only">
-                                <span class="inline-flex rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-slate-300 transition hover:border-cyan-300 hover:text-white peer-checked:border-cyan-300 peer-checked:bg-cyan-400/15 peer-checked:text-cyan-100" th:text="${tag}">Array</span>
+                                <span class="inline-flex rounded-lg border border-slate-200 bg-white px-2.5 py-1 font-mono text-xs text-slate-600 transition hover:border-cyan-400 hover:text-cyan-600 peer-checked:border-cyan-500 peer-checked:bg-cyan-500/15 peer-checked:font-bold peer-checked:text-cyan-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-cyan-400 dark:hover:text-cyan-300 dark:peer-checked:border-cyan-500 dark:peer-checked:bg-cyan-500/20 dark:peer-checked:text-cyan-300"
+                                      th:text="${tag}">Array</span>
                             </label>
                         </div>
                     </section>
                 </div>
             </div>
 
-            <div>
-                <label for="problemLink" class="mb-2 block text-sm font-medium text-slate-200">Problem Link</label>
-                <input id="problemLink" type="url" th:field="*{problemLink}" class="w-full rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-300">
-                <p th:if="${#fields.hasErrors('problemLink')}" th:errors="*{problemLink}" class="mt-2 text-sm text-rose-300"></p>
-            </div>
-
-            <div>
-                <label for="problemDescription" class="mb-2 block text-sm font-medium text-slate-200">Problem Description</label>
-                <textarea id="problemDescription" rows="5" th:field="*{problemDescription}" class="w-full rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-300"></textarea>
-                <p th:if="${#fields.hasErrors('problemDescription')}" th:errors="*{problemDescription}" class="mt-2 text-sm text-rose-300"></p>
-            </div>
-
-            <div class="grid gap-5 md:grid-cols-2">
-                <div>
-                    <label for="timeTakenToSolve" class="mb-2 block text-sm font-medium text-slate-200">Time Taken (minutes)</label>
-                    <input id="timeTakenToSolve" type="number" min="0" th:field="*{timeTakenToSolve}" class="w-full rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-300">
+            <!-- SECTION 3: PRACTICE METRICS & CONTEXT -->
+            <div class="tactical-card p-6 space-y-5">
+                <div class="flex items-center gap-2 border-b border-slate-100 pb-3 dark:border-slate-800">
+                    <span class="grid h-6 w-6 place-items-center rounded-md bg-cyan-500/10 font-mono text-xs font-bold text-cyan-600 dark:text-cyan-400">03</span>
+                    <h2 class="font-mono text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white">Context & Practice Metrics</h2>
                 </div>
 
+                <!-- Problem Description -->
                 <div>
-                    <label for="dateSolved" class="mb-2 block text-sm font-medium text-slate-200">Date Solved</label>
-                    <input id="dateSolved" type="date" th:field="*{dateSolved}" class="w-full rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-300">
-                </div>
-            </div>
-
-            <div class="grid gap-5 md:grid-cols-2">
-                <div>
-                    <label for="attemptsTaken" class="mb-2 block text-sm font-medium text-slate-200">Attempts Taken</label>
-                    <input id="attemptsTaken" type="number" min="1" th:field="*{attemptsTaken}" class="w-full rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-white outline-none focus:border-cyan-300">
+                    <label for="problemDescription" class="mb-1.5 block font-mono text-xs font-semibold text-slate-700 dark:text-slate-300">Approach & Notes</label>
+                    <textarea id="problemDescription" rows="4" th:field="*{problemDescription}" 
+                              placeholder="Key intuition, data structure choice, edge-case traps, or personal reflections..."
+                              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:border-cyan-500 focus:bg-white focus:ring-1 focus:ring-cyan-500 dark:border-slate-800 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500 dark:focus:bg-slate-900"></textarea>
+                    <p th:if="${#fields.hasErrors('problemDescription')}" th:errors="*{problemDescription}" class="mt-1 font-mono text-xs text-rose-500"></p>
                 </div>
 
-                <label class="flex items-center gap-3 rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-sm font-medium text-slate-200">
-                    <input type="checkbox" th:field="*{revisit}" class="h-4 w-4 rounded border-white/20 bg-slate-950">
-                    Mark for revisit
-                </label>
+                <!-- Practice Stats Grid -->
+                <div class="grid gap-4 sm:grid-cols-3">
+                    <div>
+                        <label for="timeTakenToSolve" class="mb-1.5 block font-mono text-xs font-semibold text-slate-700 dark:text-slate-300">Time Taken (minutes)</label>
+                        <input id="timeTakenToSolve" type="number" min="0" th:field="*{timeTakenToSolve}" placeholder="e.g. 25"
+                               class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-xs text-slate-900 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 dark:border-slate-800 dark:bg-slate-900 dark:text-white">
+                    </div>
+
+                    <div>
+                        <label for="dateSolved" class="mb-1.5 block font-mono text-xs font-semibold text-slate-700 dark:text-slate-300">Date Solved</label>
+                        <input id="dateSolved" type="date" th:field="*{dateSolved}" 
+                               class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-xs text-slate-900 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 dark:border-slate-800 dark:bg-slate-900 dark:text-white">
+                    </div>
+
+                    <div>
+                        <label for="attemptsTaken" class="mb-1.5 block font-mono text-xs font-semibold text-slate-700 dark:text-slate-300">Attempts Needed</label>
+                        <input id="attemptsTaken" type="number" min="1" th:field="*{attemptsTaken}" placeholder="1"
+                               class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-xs text-slate-900 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 dark:border-slate-800 dark:bg-slate-900 dark:text-white">
+                    </div>
+                </div>
+
+                <!-- Revisit Toggle Switch -->
+                <div class="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4 flex items-center justify-between">
+                    <div>
+                        <span class="font-mono text-xs font-bold text-amber-600 dark:text-amber-400">Mark For Spaced Revisit</span>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Flag this challenge to prioritize for pre-interview revision.</p>
+                    </div>
+                    <label class="relative inline-flex cursor-pointer items-center">
+                        <input type="checkbox" th:field="*{revisit}" class="peer sr-only">
+                        <div class="peer h-6 w-11 rounded-full bg-slate-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:bg-amber-500 peer-checked:after:translate-x-full peer-focus:outline-none dark:bg-slate-700"></div>
+                    </label>
+                </div>
+
             </div>
 
-            <button type="submit" class="w-full rounded-lg bg-cyan-400 px-5 py-3 font-semibold text-slate-950 hover:bg-cyan-300">Save Problem</button>
+            <!-- Submit Buttons -->
+            <div class="flex items-center justify-end gap-3 pt-2">
+                <a th:href="@{/problems}" class="rounded-xl px-4 py-2.5 text-xs font-semibold text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">Cancel</a>
+                <button type="submit" 
+                        class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-600 px-6 py-2.5 font-mono text-xs font-bold text-slate-950 shadow-md shadow-cyan-500/20 transition hover:from-cyan-400 hover:to-cyan-500">
+                    <span th:replace="~{fragments :: icon('check-circle', 'h-4 w-4 stroke-[2.5]')}"></span>
+                    <span>Save to Library</span>
+                </button>
+            </div>
+
         </form>
-    </section>
+
+    </div>
 </main>
 </body>
 </html>

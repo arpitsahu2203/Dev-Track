@@ -2,149 +2,368 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{base :: layout(~{::main}, 'problems')}">
 <body>
-<main class="px-6 py-10">
-    <section class="mx-auto max-w-6xl">
-        <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+<main class="px-4 py-8 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-7xl space-y-8">
+        
+        <!-- ==============================================================
+             PAGE TITLE & QUICK ACTION
+             ============================================================== -->
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-                <p class="text-sm font-semibold uppercase tracking-[0.25em] text-cyan-300">Dashboard</p>
-                <h1 class="mt-2 text-3xl font-bold">My Problems</h1>
+                <div class="flex items-center gap-2">
+                    <span class="font-mono text-[11px] font-bold uppercase tracking-widest text-cyan-600 dark:text-cyan-400">Tactical Feed</span>
+                    <span class="rounded-full bg-cyan-500/10 px-2 py-0.5 font-mono text-[10px] font-semibold text-cyan-700 dark:text-cyan-300">DSA Command</span>
+                </div>
+                <h1 class="mt-1 font-mono text-2xl font-extrabold tracking-tight sm:text-3xl">My Problem Library</h1>
+                <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Tracked practice, algorithmic complexity, and structured AI revision.</p>
             </div>
-            <a th:href="@{/problems/add}" class="rounded-lg bg-cyan-400 px-5 py-3 text-sm font-semibold text-slate-950 hover:bg-cyan-300">Add Problem</a>
+            <a th:href="@{/problems/add}" 
+               class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-600 px-4 py-2.5 text-xs font-bold text-slate-950 shadow-md shadow-cyan-500/20 transition hover:from-cyan-400 hover:to-cyan-500">
+                <span th:replace="~{fragments :: icon('plus', 'h-4 w-4 stroke-[2.5]')}"></span>
+                <span>Add Problem</span>
+            </a>
         </div>
 
-        <p th:if="${successMessage}" th:text="${successMessage}" class="mt-6 rounded-lg border border-emerald-400/20 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-200"></p>
-        <p th:if="${errorMessage}" th:text="${errorMessage}" class="mt-6 rounded-lg border border-rose-400/20 bg-rose-400/10 px-4 py-3 text-sm text-rose-200"></p>
+        <!-- ==============================================================
+             TACTICAL METRIC CARDS (WINDSTER-INSPIRED)
+             ============================================================== -->
+        <section class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+            
+            <!-- Total Solved Metric Card -->
+            <div class="counter-card tactical-card p-5" th:data-count="${totalCount}">
+                <div class="flex items-center justify-between">
+                    <span class="font-mono text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Solved</span>
+                    <span class="rounded-lg bg-cyan-500/10 p-1.5 text-cyan-600 dark:text-cyan-400" th:replace="~{fragments :: icon('grid', 'h-4 w-4')}"></span>
+                </div>
+                <div class="mt-4 flex items-center justify-between">
+                    <span class="font-mono text-3xl font-black text-slate-900 dark:text-white" th:text="${totalCount}">0</span>
+                    <div class="relative h-12 w-12">
+                        <svg class="h-full w-full -rotate-90" viewBox="0 0 36 36">
+                            <path class="text-slate-200 dark:text-slate-800" stroke-width="3.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                            <circle class="progress-ring text-cyan-500" stroke-width="3.5" stroke-linecap="round" stroke="currentColor" fill="none" cx="18" cy="18" r="15.9155" />
+                        </svg>
+                    </div>
+                </div>
+                <p class="mt-3 text-[11px] text-slate-400 dark:text-slate-500">Practice volume across all sources</p>
+            </div>
 
-        <section class="mt-8 grid gap-4 md:grid-cols-4">
-            <div class="counter-card rounded-2xl border border-white/10 bg-white/5 p-5 text-center" th:data-count="${totalCount}">
-                <div class="relative mx-auto h-28 w-28">
-                    <svg class="h-full w-full -rotate-90" viewBox="0 0 120 120">
-                        <circle cx="60" cy="60" r="52" stroke="rgba(255,255,255,0.12)" stroke-width="10" fill="none"></circle>
-                        <circle class="progress-ring" cx="60" cy="60" r="52" stroke="#22d3ee" stroke-width="10" fill="none" stroke-linecap="round"></circle>
-                    </svg>
-                    <span class="counter-number absolute inset-0 grid place-items-center text-2xl font-bold" th:text="${totalCount}">0</span>
+            <!-- Easy Metric Card -->
+            <div class="counter-card tactical-card p-5" th:data-count="${easyCount}">
+                <div class="flex items-center justify-between">
+                    <span class="font-mono text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Easy</span>
+                    <span class="rounded bg-emerald-500/10 px-1.5 py-0.5 font-mono text-[10px] font-bold text-emerald-600 dark:text-emerald-400">EASY</span>
                 </div>
-                <p class="mt-3 text-sm text-slate-300">Total Solved</p>
+                <div class="mt-4 flex items-baseline justify-between">
+                    <span class="font-mono text-3xl font-black text-slate-900 dark:text-white" th:text="${easyCount}">0</span>
+                    <span class="font-mono text-xs text-slate-400" th:text="${totalCount > 0 ? #numbers.formatDecimal((easyCount * 100.0) / totalCount, 1, 0) + '%' : '0%'}">0%</span>
+                </div>
+                <div class="mt-3 h-1.5 w-full rounded-full bg-slate-100 dark:bg-slate-800">
+                    <div class="h-1.5 rounded-full bg-emerald-500 transition-all duration-700" 
+                         th:style="'width: ' + (${totalCount > 0} ? (${easyCount * 100.0 / totalCount}) : 0) + '%;'"></div>
+                </div>
             </div>
-            <div class="counter-card rounded-2xl border border-white/10 bg-white/5 p-5 text-center" th:data-count="${easyCount}">
-                <div class="relative mx-auto h-24 w-24">
-                    <svg class="h-full w-full -rotate-90" viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" stroke="rgba(255,255,255,0.12)" stroke-width="10" fill="none"></circle><circle class="progress-ring" cx="60" cy="60" r="52" stroke="#34d399" stroke-width="10" fill="none" stroke-linecap="round"></circle></svg>
-                    <span class="counter-number absolute inset-0 grid place-items-center text-xl font-bold" th:text="${easyCount}">0</span>
+
+            <!-- Medium Metric Card -->
+            <div class="counter-card tactical-card p-5" th:data-count="${mediumCount}">
+                <div class="flex items-center justify-between">
+                    <span class="font-mono text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">Medium</span>
+                    <span class="rounded bg-amber-500/10 px-1.5 py-0.5 font-mono text-[10px] font-bold text-amber-600 dark:text-amber-400">MED</span>
                 </div>
-                <p class="mt-3 text-sm text-slate-300">Easy</p>
+                <div class="mt-4 flex items-baseline justify-between">
+                    <span class="font-mono text-3xl font-black text-slate-900 dark:text-white" th:text="${mediumCount}">0</span>
+                    <span class="font-mono text-xs text-slate-400" th:text="${totalCount > 0 ? #numbers.formatDecimal((mediumCount * 100.0) / totalCount, 1, 0) + '%' : '0%'}">0%</span>
+                </div>
+                <div class="mt-3 h-1.5 w-full rounded-full bg-slate-100 dark:bg-slate-800">
+                    <div class="h-1.5 rounded-full bg-amber-500 transition-all duration-700" 
+                         th:style="'width: ' + (${totalCount > 0} ? (${mediumCount * 100.0 / totalCount}) : 0) + '%;'"></div>
+                </div>
             </div>
-            <div class="counter-card rounded-2xl border border-white/10 bg-white/5 p-5 text-center" th:data-count="${mediumCount}">
-                <div class="relative mx-auto h-24 w-24">
-                    <svg class="h-full w-full -rotate-90" viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" stroke="rgba(255,255,255,0.12)" stroke-width="10" fill="none"></circle><circle class="progress-ring" cx="60" cy="60" r="52" stroke="#fbbf24" stroke-width="10" fill="none" stroke-linecap="round"></circle></svg>
-                    <span class="counter-number absolute inset-0 grid place-items-center text-xl font-bold" th:text="${mediumCount}">0</span>
+
+            <!-- Hard Metric Card -->
+            <div class="counter-card tactical-card p-5" th:data-count="${hardCount}">
+                <div class="flex items-center justify-between">
+                    <span class="font-mono text-xs font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">Hard</span>
+                    <span class="rounded bg-rose-500/10 px-1.5 py-0.5 font-mono text-[10px] font-bold text-rose-600 dark:text-rose-400">HARD</span>
                 </div>
-                <p class="mt-3 text-sm text-slate-300">Medium</p>
-            </div>
-            <div class="counter-card rounded-2xl border border-white/10 bg-white/5 p-5 text-center" th:data-count="${hardCount}">
-                <div class="relative mx-auto h-24 w-24">
-                    <svg class="h-full w-full -rotate-90" viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" stroke="rgba(255,255,255,0.12)" stroke-width="10" fill="none"></circle><circle class="progress-ring" cx="60" cy="60" r="52" stroke="#fb7185" stroke-width="10" fill="none" stroke-linecap="round"></circle></svg>
-                    <span class="counter-number absolute inset-0 grid place-items-center text-xl font-bold" th:text="${hardCount}">0</span>
+                <div class="mt-4 flex items-baseline justify-between">
+                    <span class="font-mono text-3xl font-black text-slate-900 dark:text-white" th:text="${hardCount}">0</span>
+                    <span class="font-mono text-xs text-slate-400" th:text="${totalCount > 0 ? #numbers.formatDecimal((hardCount * 100.0) / totalCount, 1, 0) + '%' : '0%'}">0%</span>
                 </div>
-                <p class="mt-3 text-sm text-slate-300">Hard</p>
+                <div class="mt-3 h-1.5 w-full rounded-full bg-slate-100 dark:bg-slate-800">
+                    <div class="h-1.5 rounded-full bg-rose-500 transition-all duration-700" 
+                         th:style="'width: ' + (${totalCount > 0} ? (${hardCount * 100.0 / totalCount}) : 0) + '%;'"></div>
+                </div>
             </div>
         </section>
 
-        <form th:action="@{/problems}" method="get" class="mt-8 grid gap-4 rounded-2xl border border-white/10 bg-white/5 p-5 md:grid-cols-3">
-            <select name="difficulty" class="rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-white">
-                <option value="">All difficulties</option>
-                <option th:each="level : ${hardnessLevels}" th:value="${level}" th:text="${level}" th:selected="${difficulty == level.name()}"></option>
-            </select>
-            <select name="platform" class="rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-white">
-                <option value="">All platforms</option>
-                <option th:each="platformOption : ${platforms}" th:value="${platformOption}" th:text="${platformOption}" th:selected="${platform == platformOption}"></option>
-            </select>
-            <select name="topic" class="rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-white">
-                <option value="">All topics</option>
-                <option th:each="topicOption : ${topicTags}" th:value="${topicOption}" th:text="${topicOption}" th:selected="${topic == topicOption}"></option>
-            </select>
-            <input name="dateAdded" th:value="${dateAdded}" type="date" class="rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-white">
-            <select name="revisit" class="rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-white">
-                <option value="">Revisit: Any</option>
-                <option value="true" th:selected="${revisit == true}">Yes</option>
-                <option value="false" th:selected="${revisit == false}">No</option>
-            </select>
-            <select name="attemptsGreaterThan" class="rounded-lg border border-white/10 bg-slate-950 px-4 py-3 text-white">
-                <option value="">Attempts: Any</option>
-                <option th:each="n : ${#numbers.sequence(1,4)}" th:value="${n}" th:text="${'>' + n}" th:selected="${attemptsGreaterThan == n}"></option>
-            </select>
-            <button type="submit" class="rounded-lg bg-cyan-400 px-5 py-3 font-semibold text-slate-950 hover:bg-cyan-300 md:col-span-3">Apply Filters</button>
-        </form>
+        <!-- ==============================================================
+             TACTICAL FILTER TOOLBAR
+             ============================================================== -->
+        <section class="tactical-card p-4 sm:p-5">
+            <!-- Fast Client-Side Instant Search -->
+            <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div class="relative flex-1">
+                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                        <span th:replace="~{fragments :: icon('search', 'h-4 w-4 text-slate-400')}"></span>
+                    </div>
+                    <input id="problem-search" type="text" placeholder="Live filter: search by title, tag, or platform (e.g. 'Binary Search', 'LeetCode')..."
+                           class="w-full rounded-lg border border-slate-200 bg-slate-50/80 py-2 pl-9 pr-12 text-xs text-slate-900 placeholder-slate-400 focus:border-cyan-500 focus:bg-white focus:ring-1 focus:ring-cyan-500 dark:border-slate-800 dark:bg-slate-900/80 dark:text-white dark:placeholder-slate-500 dark:focus:bg-slate-900">
+                    <span class="absolute inset-y-0 right-0 flex items-center pr-3">
+                        <kbd class="rounded border border-slate-200 bg-white px-1.5 py-0.5 font-mono text-[10px] text-slate-400 dark:border-slate-700 dark:bg-slate-800">⌘K</kbd>
+                    </span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button type="button" data-collapse-toggle="advanced-filters" class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700">
+                        <span th:replace="~{fragments :: icon('filter', 'h-3.5 w-3.5 text-cyan-500')}"></span>
+                        <span>Advanced Filters</span>
+                        <span th:replace="~{fragments :: icon('chevron-down', 'h-3 w-3')}"></span>
+                    </button>
+                    <a th:href="@{/problems}" class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:border-slate-800 dark:hover:bg-slate-800 dark:hover:text-white">Reset</a>
+                </div>
+            </div>
 
-        <section id="problem-list" class="mt-8 grid gap-4">
-            <article th:each="problem : ${problems}" class="problem-card rounded-2xl border border-white/10 bg-white/5 p-5">
-                <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                    <div>
-                        <div class="flex flex-wrap items-center gap-3">
-                            <span class="grid h-9 w-9 place-items-center rounded-full bg-slate-950 text-xs font-bold text-cyan-300"
-                                  th:title="${problem.platform}"
-                                  th:text="${#strings.containsIgnoreCase(problem.platform, 'leetcode') ? 'LC' : (#strings.containsIgnoreCase(problem.platform, 'codechef') ? 'CC' : (#strings.containsIgnoreCase(problem.platform, 'geeks') || #strings.containsIgnoreCase(problem.platform, 'gfg') ? 'GFG' : (#strings.containsIgnoreCase(problem.platform, 'hacker') ? 'HR' : (#strings.containsIgnoreCase(problem.platform, 'codeforces') ? 'CF' : #strings.substring(problem.platform,0,1)))))}">L</span>
-                            <h2 class="text-xl font-semibold" th:text="${problem.problemName}">Problem</h2>
-                            <span class="rounded-full px-3 py-1 text-xs font-semibold"
-                                  th:classappend="${problem.hardnessLevel.name() == 'EASY'} ? ' bg-emerald-400/15 text-emerald-300' : (${problem.hardnessLevel.name() == 'MEDIUM'} ? ' bg-amber-400/15 text-amber-300' : ' bg-rose-400/15 text-rose-300')"
+            <!-- Advanced Filters Form (Collapsible) -->
+            <form id="advanced-filters" th:action="@{/problems}" method="get" class="grid gap-3 pt-3 border-t border-slate-100 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 dark:border-slate-800">
+                <!-- Difficulty Filter -->
+                <div>
+                    <label class="mb-1 block font-mono text-[10px] font-bold uppercase tracking-wider text-slate-400">Difficulty</label>
+                    <select name="difficulty" class="w-full rounded-lg border border-slate-200 bg-slate-50 py-1.5 text-xs text-slate-900 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 dark:border-slate-800 dark:bg-slate-900 dark:text-white">
+                        <option value="">All Difficulties</option>
+                        <option th:each="level : ${hardnessLevels}" th:value="${level}" th:text="${level}" th:selected="${difficulty == level.name()}"></option>
+                    </select>
+                </div>
+
+                <!-- Platform Filter -->
+                <div>
+                    <label class="mb-1 block font-mono text-[10px] font-bold uppercase tracking-wider text-slate-400">Platform</label>
+                    <select name="platform" class="w-full rounded-lg border border-slate-200 bg-slate-50 py-1.5 text-xs text-slate-900 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 dark:border-slate-800 dark:bg-slate-900 dark:text-white">
+                        <option value="">All Platforms</option>
+                        <option th:each="p : ${platforms}" th:value="${p}" th:text="${p}" th:selected="${platform == p}"></option>
+                    </select>
+                </div>
+
+                <!-- Topic Filter -->
+                <div>
+                    <label class="mb-1 block font-mono text-[10px] font-bold uppercase tracking-wider text-slate-400">Topic</label>
+                    <select name="topic" class="w-full rounded-lg border border-slate-200 bg-slate-50 py-1.5 text-xs text-slate-900 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 dark:border-slate-800 dark:bg-slate-900 dark:text-white">
+                        <option value="">All Topics</option>
+                        <option th:each="t : ${topicTags}" th:value="${t}" th:text="${t}" th:selected="${topic == t}"></option>
+                    </select>
+                </div>
+
+                <!-- Date Added Filter -->
+                <div>
+                    <label class="mb-1 block font-mono text-[10px] font-bold uppercase tracking-wider text-slate-400">Date Logged</label>
+                    <input name="dateAdded" th:value="${dateAdded}" type="date" class="w-full rounded-lg border border-slate-200 bg-slate-50 py-1.5 text-xs text-slate-900 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 dark:border-slate-800 dark:bg-slate-900 dark:text-white">
+                </div>
+
+                <!-- Revisit Filter -->
+                <div>
+                    <label class="mb-1 block font-mono text-[10px] font-bold uppercase tracking-wider text-slate-400">Revisit Status</label>
+                    <select name="revisit" class="w-full rounded-lg border border-slate-200 bg-slate-50 py-1.5 text-xs text-slate-900 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 dark:border-slate-800 dark:bg-slate-900 dark:text-white">
+                        <option value="">Any Status</option>
+                        <option value="true" th:selected="${revisit == true}">Marked for Revisit</option>
+                        <option value="false" th:selected="${revisit == false}">Not Marked</option>
+                    </select>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex items-end">
+                    <button type="submit" class="w-full rounded-lg bg-slate-900 py-1.5 text-xs font-bold text-white transition hover:bg-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700">Apply</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- ==============================================================
+             PROBLEM FEED & CARDS
+             ============================================================== -->
+        <section id="problem-list" class="space-y-4">
+            
+            <article th:each="problem : ${problems}" class="problem-card tactical-card p-5 sm:p-6" th:id="'problem-card-' + ${problem.id}">
+                <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                    
+                    <!-- Left: Metadata, Title, Description, Topic Chips -->
+                    <div class="min-w-0 flex-1 space-y-3">
+                        
+                        <!-- Header Line: Platform Badge, Title, Difficulty -->
+                        <div class="flex flex-wrap items-center gap-2.5">
+                            <!-- Platform Monospace Badge -->
+                            <span class="inline-flex items-center gap-1 rounded-md bg-slate-100 px-2 py-0.5 font-mono text-[11px] font-bold tracking-wider text-slate-800 dark:bg-slate-800 dark:text-slate-200"
+                                  th:title="${problem.platform}">
+                                <span class="text-cyan-500">#</span>
+                                <span th:text="${problem.platform}">LeetCode</span>
+                            </span>
+
+                            <!-- Problem Title -->
+                            <h2 class="font-mono text-base font-bold tracking-tight text-slate-900 dark:text-white sm:text-lg" 
+                                th:text="${problem.problemName}">Problem Title</h2>
+
+                            <!-- Difficulty Badge -->
+                            <span class="rounded-full px-2.5 py-0.5 font-mono text-[11px] font-bold uppercase tracking-wider"
+                                  th:classappend="${problem.hardnessLevel.name() == 'EASY'} ? ' bg-emerald-500/15 text-emerald-600 dark:text-emerald-400' : (${problem.hardnessLevel.name() == 'MEDIUM'} ? ' bg-amber-500/15 text-amber-600 dark:text-amber-400' : ' bg-rose-500/15 text-rose-600 dark:text-rose-400')"
                                   th:text="${problem.hardnessLevel}">Easy</span>
+
+                            <!-- Revisit Tag -->
+                            <span th:if="${problem.revisit}" class="inline-flex items-center gap-1 rounded-full bg-amber-500/15 px-2.5 py-0.5 font-mono text-[10px] font-bold text-amber-600 dark:text-amber-400">
+                                <span th:replace="~{fragments :: icon('bookmark-solid', 'h-3 w-3 text-amber-500')}"></span>
+                                <span>REVISIT</span>
+                            </span>
                         </div>
-                        <p class="mt-3 text-sm leading-6 text-slate-400" th:text="${problem.problemDescription}">Description</p>
-                        <div class="mt-3 flex flex-wrap items-center gap-2 text-xs">
-                            <span class="rounded-full bg-indigo-400/15 px-3 py-1 text-indigo-200" th:text="${problem.platform}">Platform</span>
-                            <span th:if="${problem.topic == null || problem.topic.isBlank()}" class="text-slate-500">No topics selected</span>
+
+                        <!-- Problem Description (if present) -->
+                        <p th:if="${problem.problemDescription != null && !problem.problemDescription.isBlank()}" 
+                           class="text-xs leading-5 text-slate-600 dark:text-slate-400 line-clamp-2" 
+                           th:text="${problem.problemDescription}">Description summary</p>
+
+                        <!-- Topic Chips -->
+                        <div class="flex flex-wrap items-center gap-1.5">
                             <span th:if="${problem.topic != null}" th:each="tag : ${#strings.arraySplit(problem.topic, ',')}"
-                                  class="rounded-full bg-cyan-400/15 px-3 py-1 text-cyan-100"
+                                  class="rounded-md border border-cyan-500/20 bg-cyan-500/5 px-2 py-0.5 font-mono text-[10px] font-medium text-cyan-700 dark:text-cyan-300"
                                   th:text="${#strings.trim(tag)}">Array</span>
                         </div>
-                        <div class="mt-3 flex flex-wrap gap-2 text-xs text-slate-300">
-                            <span class="rounded-full bg-slate-950 px-3 py-1">Added: <span th:text="${problem.dateAdded ?: 'Not set'}">Today</span></span>
-                            <span class="rounded-full bg-slate-950 px-3 py-1">Solved: <span th:text="${problem.dateSolved ?: 'Pending'}">Pending</span></span>
-                            <span class="rounded-full bg-slate-950 px-3 py-1">Time: <span th:text="${problem.timeTakenToSolve != null ? problem.timeTakenToSolve + ' min' : 'Not set'}">0 min</span></span>
-                            <span class="rounded-full px-3 py-1" th:classappend="${problem.revisit} ? ' bg-amber-400/15 text-amber-300' : ' bg-slate-950 text-slate-300'" th:text="${problem.revisit ? 'Revisit' : 'No revisit'}">Revisit</span>
+
+                        <!-- Tactical Stats Footnote -->
+                        <div class="flex flex-wrap items-center gap-4 pt-1 font-mono text-[11px] text-slate-400 dark:text-slate-500">
+                            <span class="inline-flex items-center gap-1.5">
+                                <span th:replace="~{fragments :: icon('calendar', 'h-3.5 w-3.5 text-slate-400')}"></span>
+                                <span>Solved: <span class="font-semibold text-slate-600 dark:text-slate-300" th:text="${problem.dateSolved ?: 'Pending'}">2026-09-01</span></span>
+                            </span>
+                            <span class="inline-flex items-center gap-1.5">
+                                <span th:replace="~{fragments :: icon('clock', 'h-3.5 w-3.5 text-slate-400')}"></span>
+                                <span>Time: <span class="font-semibold text-slate-600 dark:text-slate-300" th:text="${problem.timeTakenToSolve != null ? problem.timeTakenToSolve + ' min' : 'Not set'}">25 min</span></span>
+                            </span>
+                            <span class="inline-flex items-center gap-1.5">
+                                <span th:replace="~{fragments :: icon('fire', 'h-3.5 w-3.5 text-slate-400')}"></span>
+                                <span>Attempts: <span class="font-semibold text-slate-600 dark:text-slate-300" th:text="${problem.attemptsTaken ?: 1}">1</span></span>
+                            </span>
                         </div>
-                        <section th:with="aiReview=${aiReviewsByProblemId[problem.id]}" class="ai-review-panel mt-5 rounded-xl border p-4">
-                            <div class="flex flex-wrap items-center justify-between gap-3">
-                                <div>
-                                    <p class="text-xs font-semibold uppercase tracking-wider text-violet-300">AI Revision Coach</p>
-                                    <p th:if="${aiReview == null}" class="mt-1 text-sm text-slate-400">Generate a personal revision plan from this problem's details.</p>
-                                </div>
-                                <form th:action="@{/problems/{id}/ai-review(id=${problem.id})}" method="post">
-                                    <button type="submit" class="rounded-lg border border-violet-300/40 px-3 py-2 text-xs font-semibold text-violet-100 hover:bg-violet-400/15"
-                                            th:text="${aiReview == null ? 'Generate AI Review' : 'Regenerate Review'}">Generate AI Review</button>
-                                </form>
-                            </div>
-                            <div th:if="${aiReview != null}" class="mt-4 grid gap-3 text-sm md:grid-cols-2">
-                                <div><p class="font-semibold text-violet-200">Key concept</p><p class="mt-1 text-slate-300" th:text="${aiReview.keyConcept}">Concept</p></div>
-                                <div><p class="font-semibold text-violet-200">Possible struggle</p><p class="mt-1 text-slate-300" th:text="${aiReview.likelyStruggle}">Struggle</p></div>
-                                <div class="md:col-span-2"><p class="font-semibold text-violet-200">Recommended approach</p><p class="mt-1 whitespace-pre-line leading-6 text-slate-300" th:text="${aiReview.recommendedApproach ?: 'Regenerate this review to include an approach.'}">Approach</p></div>
-                                <div><p class="font-semibold text-violet-200">Complexity guide</p><p class="mt-1 whitespace-pre-line text-slate-300" th:text="${aiReview.complexityAnalysis ?: 'Not available for this older review.'}">Complexity</p></div>
-                                <div><p class="font-semibold text-violet-200">Common pitfalls</p><p class="mt-1 whitespace-pre-line text-slate-300" th:text="${aiReview.commonPitfalls ?: 'Not available for this older review.'}">Pitfalls</p></div>
-                                <div class="md:col-span-2"><p class="font-semibold text-violet-200">Revision note</p><p class="mt-1 text-slate-300" th:text="${aiReview.revisionNote}">Note</p></div>
-                                <div class="md:col-span-2"><p class="font-semibold text-violet-200">Revision checklist</p><p class="mt-1 whitespace-pre-line text-slate-300" th:text="${aiReview.revisionChecklist ?: 'Regenerate this review to include a checklist.'}">Checklist</p></div>
-                                <div><p class="font-semibold text-violet-200">Recall question</p><p class="mt-1 text-slate-300" th:text="${aiReview.recallQuestion}">Question</p></div>
-                                <div><p class="font-semibold text-violet-200">Review on</p><p class="mt-1 text-slate-300" th:text="${aiReview.suggestedRevisionDate}">Date</p><p class="mt-2 text-xs text-slate-400">Practice next: <span th:text="${aiReview.nextTopics}">Tags</span></p></div>
-                            </div>
-                        </section>
+
                     </div>
-                    <a th:href="${problem.problemLink}" target="_blank" class="rounded-lg border border-white/10 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10">Open</a>
+
+                    <!-- Right Action Button: External Link -->
+                    <div class="flex items-center gap-2 self-start">
+                        <a th:if="${problem.problemLink != null && !problem.problemLink.isBlank()}" 
+                           th:href="${problem.problemLink}" target="_blank" rel="noopener noreferrer"
+                           class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:border-cyan-500 hover:text-cyan-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-cyan-400 dark:hover:text-cyan-400">
+                            <span>Open</span>
+                            <span th:replace="~{fragments :: icon('external-link', 'h-3.5 w-3.5')}"></span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- ==========================================================
+                     INTERACTIVE AI REVISION INTELLIGENCE PANEL (FLOWBITE ACCORDION)
+                     ========================================================== -->
+                <div class="mt-4 border-t border-slate-100 pt-3 dark:border-slate-800/80" th:with="aiReview=${aiReviewsByProblemId[problem.id]}">
+                    
+                    <!-- If AI Review exists: Collapsible Accordion -->
+                    <div th:if="${aiReview != null}">
+                        <button type="button" 
+                                th:data-collapse-toggle="'ai-panel-' + ${problem.id}"
+                                class="flex w-full items-center justify-between rounded-lg bg-violet-50/70 px-3.5 py-2 text-left text-xs font-semibold text-violet-900 hover:bg-violet-100/70 dark:bg-violet-950/30 dark:text-violet-200 dark:hover:bg-violet-950/50">
+                            <div class="flex items-center gap-2">
+                                <span th:replace="~{fragments :: icon('sparkles', 'h-4 w-4 text-violet-500')}"></span>
+                                <span class="font-mono uppercase tracking-wider">AI Revision Intelligence</span>
+                                <span class="rounded bg-violet-200/60 px-1.5 py-0.5 font-mono text-[10px] text-violet-800 dark:bg-violet-900 dark:text-violet-200" th:text="${aiReview.suggestedRevisionDate != null ? 'Revise by: ' + aiReview.suggestedRevisionDate : 'Active'}">Active</span>
+                            </div>
+                            <span th:replace="~{fragments :: icon('chevron-down', 'h-3.5 w-3.5 text-violet-500 transition-transform')}"></span>
+                        </button>
+
+                        <!-- Accordion Body -->
+                        <div th:id="'ai-panel-' + ${problem.id}" class="hidden rounded-b-xl border-x border-b border-violet-200/50 bg-violet-50/30 p-4 space-y-4 dark:border-violet-900/40 dark:bg-violet-950/20">
+                            
+                            <!-- Concept & Likely Struggle -->
+                            <div class="grid gap-3 sm:grid-cols-2 text-xs">
+                                <div class="rounded-lg border border-violet-200/50 bg-white/80 p-3 dark:border-violet-900/40 dark:bg-slate-900/60">
+                                    <span class="font-mono text-[10px] font-bold uppercase tracking-wider text-violet-600 dark:text-violet-400">Key Concept</span>
+                                    <p class="mt-1 font-semibold text-slate-800 dark:text-slate-200" th:text="${aiReview.keyConcept}">Concept name</p>
+                                </div>
+                                <div class="rounded-lg border border-violet-200/50 bg-white/80 p-3 dark:border-violet-900/40 dark:bg-slate-900/60">
+                                    <span class="font-mono text-[10px] font-bold uppercase tracking-wider text-rose-500">Likely Struggle</span>
+                                    <p class="mt-1 font-semibold text-slate-800 dark:text-slate-200" th:text="${aiReview.likelyStruggle}">Potential hurdle</p>
+                                </div>
+                            </div>
+
+                            <!-- Recommended Algorithmic Approach -->
+                            <div class="rounded-lg border border-violet-200/50 bg-white/80 p-3.5 dark:border-violet-900/40 dark:bg-slate-900/60">
+                                <span class="font-mono text-[10px] font-bold uppercase tracking-wider text-violet-600 dark:text-violet-400">Optimal Algorithmic Approach</span>
+                                <div class="prose prose-sm dark:prose-invert max-w-none mt-1.5 text-xs leading-6 text-slate-700 dark:text-slate-300 whitespace-pre-line" 
+                                     th:text="${aiReview.recommendedApproach ?: 'No approach details available.'}">Approach description</div>
+                            </div>
+
+                            <!-- Complexity & Pitfalls -->
+                            <div class="grid gap-3 sm:grid-cols-2 text-xs">
+                                <div class="rounded-lg border border-violet-200/50 bg-white/80 p-3 dark:border-violet-900/40 dark:bg-slate-900/60">
+                                    <span class="font-mono text-[10px] font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">Complexity Analysis</span>
+                                    <p class="mt-1 whitespace-pre-line font-mono text-[11px] text-slate-700 dark:text-slate-300" th:text="${aiReview.complexityAnalysis ?: 'N/A'}">O(N)</p>
+                                </div>
+                                <div class="rounded-lg border border-violet-200/50 bg-white/80 p-3 dark:border-violet-900/40 dark:bg-slate-900/60">
+                                    <span class="font-mono text-[10px] font-bold uppercase tracking-wider text-amber-500">Common Pitfalls</span>
+                                    <p class="mt-1 whitespace-pre-line text-slate-700 dark:text-slate-300" th:text="${aiReview.commonPitfalls ?: 'N/A'}">Edge cases</p>
+                                </div>
+                            </div>
+
+                            <!-- Revision Checklist -->
+                            <div class="rounded-lg border border-violet-200/50 bg-white/80 p-3.5 dark:border-violet-900/40 dark:bg-slate-900/60">
+                                <span class="font-mono text-[10px] font-bold uppercase tracking-wider text-violet-600 dark:text-violet-400">Pre-Interview Revision Checklist</span>
+                                <div class="mt-1.5 space-y-1.5 text-xs text-slate-700 dark:text-slate-300 whitespace-pre-line" th:text="${aiReview.revisionChecklist}">Checklist items</div>
+                            </div>
+
+                            <!-- Spaced Recall Self-Quiz -->
+                            <div class="rounded-lg border border-violet-200/50 bg-white/80 p-3.5 dark:border-violet-900/40 dark:bg-slate-900/60">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-mono text-[10px] font-bold uppercase tracking-wider text-violet-600 dark:text-violet-400">Spaced Recall Self-Test</span>
+                                    <form th:action="@{/problems/{id}/ai-review(id=${problem.id})}" method="post">
+                                        <button type="submit" class="inline-flex items-center gap-1 font-mono text-[10px] text-violet-600 hover:text-violet-800 dark:text-violet-400">
+                                            <span th:replace="~{fragments :: icon('arrow-path', 'h-3 w-3')}"></span>
+                                            <span>Regenerate</span>
+                                        </button>
+                                    </form>
+                                </div>
+                                <p class="mt-1.5 text-xs font-medium text-slate-800 dark:text-slate-200" th:text="${aiReview.recallQuestion}">Can you state the invariant?</p>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- If AI Review NOT generated: Action Prompt -->
+                    <div th:if="${aiReview == null}" class="flex items-center justify-between rounded-lg bg-slate-50/80 px-3.5 py-2.5 dark:bg-slate-900/50">
+                        <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                            <span th:replace="~{fragments :: icon('sparkles', 'h-4 w-4 text-violet-400')}"></span>
+                            <span>Generate optimal complexity, pitfalls, and interview recall prompts for this problem.</span>
+                        </div>
+                        <form th:action="@{/problems/{id}/ai-review(id=${problem.id})}" method="post">
+                            <button type="submit" class="inline-flex items-center gap-1.5 rounded-lg border border-violet-500/30 bg-violet-500/10 px-3 py-1.5 text-xs font-semibold text-violet-600 transition hover:bg-violet-500/20 dark:text-violet-300">
+                                <span th:replace="~{fragments :: icon('sparkles', 'h-3.5 w-3.5')}"></span>
+                                <span>Generate AI Review</span>
+                            </button>
+                        </form>
+                    </div>
+
                 </div>
             </article>
-            <p th:if="${#lists.isEmpty(problems)}" class="rounded-2xl border border-white/10 bg-white/5 p-8 text-center text-slate-300">No problems match these filters yet.</p>
-        </section>
-        <nav id="problem-pagination" class="mt-6 flex items-center justify-between gap-4" aria-label="Problem list pagination"></nav>
-    </section>
 
-    <script>
-        gsap.from(".problem-card", { opacity: 0, y: 16, duration: 0.45, stagger: 0.08 });
-        document.querySelectorAll(".counter-card").forEach(function(card) {
-            const ring = card.querySelector(".progress-ring");
-            const count = Number(card.dataset.count || 0);
-            const circumference = 2 * Math.PI * 52;
-            ring.style.strokeDasharray = circumference;
-            ring.style.strokeDashoffset = circumference;
-            gsap.to(ring, { strokeDashoffset: Math.max(circumference - Math.min(count, 100) / 100 * circumference, 0), duration: 0.8 });
-        });
-    </script>
+            <!-- Empty Filter Notice (Client-side search) -->
+            <div id="no-filter-results" class="hidden rounded-2xl tactical-card p-12 text-center">
+                <span class="mx-auto grid h-10 w-10 place-items-center rounded-xl bg-cyan-500/10 text-cyan-500" th:replace="~{fragments :: icon('search', 'h-5 w-5')}"></span>
+                <h3 class="mt-3 font-mono text-sm font-bold text-slate-900 dark:text-white">No Matching Problems</h3>
+                <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Try adjusting your live search term or clear filters above.</p>
+            </div>
+
+            <!-- Empty Problems State (No problems in database matching server filters) -->
+            <div th:if="${#lists.isEmpty(problems)}" class="rounded-2xl tactical-card p-12 text-center">
+                <span class="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-slate-100 text-slate-400 dark:bg-slate-800" th:replace="~{fragments :: icon('terminal', 'h-6 w-6 text-cyan-500')}"></span>
+                <h3 class="mt-4 font-mono text-base font-bold text-slate-900 dark:text-white">No Problems in Library</h3>
+                <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">You haven't logged any problems matching these criteria yet.</p>
+                <a th:href="@{/problems/add}" class="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-cyan-500 px-4 py-2 text-xs font-bold text-slate-950 hover:bg-cyan-400">
+                    <span th:replace="~{fragments :: icon('plus', 'h-3.5 w-3.5 stroke-[2.5]')}"></span>
+                    <span>Add Your First Problem</span>
+                </a>
+            </div>
+
+        </section>
+
+    </div>
 </main>
 </body>
 </html>

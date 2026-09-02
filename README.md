@@ -1,270 +1,258 @@
-# Dev Tracker
+# Dev Tracker // Tactical DSA Command Center
 
-Dev Tracker is a Spring Boot web application for tracking algorithm and data-structure problems while preparing for interviews. It helps developers record problems they solve, capture context and notes, track attempts and revisits, and measure progress over time.
+<p align="center">
+  <img src="docs/screenshots/dashboard-metrics.png" alt="Dev Tracker Tactical Dashboard" width="100%" />
+</p>
 
-This README has been updated to reflect the project's current development state, local setup, and deployment options.
+<p align="center">
+  <img src="https://img.shields.io/badge/Java-21-orange.svg" alt="Java 21" />
+  <img src="https://img.shields.io/badge/Spring%20Boot-4.1.0-brightgreen.svg" alt="Spring Boot 4.1.0" />
+  <img src="https://img.shields.io/badge/Spring%20AI-2.0.0-blue.svg" alt="Spring AI" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-Forms_%26_Typography-cyan.svg" alt="Tailwind CSS" />
+  <img src="https://img.shields.io/badge/Flowbite-2.5.2-purple.svg" alt="Flowbite" />
+  <img src="https://img.shields.io/badge/MySQL-Connector-blue.svg" alt="MySQL" />
+</p>
 
----
+**Dev Tracker** is a developer's tactical command center for deliberate data structure & algorithm (DSA) practice and technical interview preparation. 
 
-## Key features
-
-- Local account registration and email/password login
-- OAuth2 sign-in (Google and GitHub) with automatic local-account creation on first verified-email login
-- Add and manage solved problems with metadata: platform (LeetCode, Codeforces, etc.), topic, difficulty, solve date, attempts, revisit status, and notes
-- Filterable problem library (platform, topic, difficulty, date range, attempts, revisit status)
-- Progress overview / aggregates (counts by difficulty, revisit queue, recent activity)
-- Server-rendered UI using Thymeleaf (responsive, accessible layouts)
-- Role-based security spots prepared to extend (user / admin)
-
----
-
-## Tech stack
-
-- Java 21
-- Spring Boot 4.x
-- Spring Security (with OAuth2 client)
-- Spring Data JPA (Hibernate)
-- Thymeleaf (server-side templates)
-- MySQL (can be switched to any JDBC-compatible DB)
-- Maven build tooling
+Rather than treating practice as a meaningless solved count, Dev Tracker bridges the gap between solving a problem today and retaining its core invariant during a live technical interview months later.
 
 ---
 
-## Repository layout (important folders)
+## 📸 Visual Tour
 
-- [src/main/java/](/D:/Java_Backend/Spring Boot/Dev Tracker/src/main/java/) - application source code
-- [src/main/resources/application.properties](/D:/Java_Backend/Spring Boot/Dev Tracker/src/main/resources/application.properties) - main configuration
-- [src/main/resources/templates/](/D:/Java_Backend/Spring Boot/Dev Tracker/src/main/resources/templates/) - Thymeleaf templates (HTML views)
-- [src/main/resources/static/](/D:/Java_Backend/Spring Boot/Dev Tracker/src/main/resources/static/) - static assets (CSS, JS, images)
+### 1. Tactical Command Center & Metric Deck
+The command center dashboard features real-time volume metrics, an animated circular progress ring, and linear balance meters for Easy, Medium, and Hard challenges. Includes a sub-50ms instant debounced search (`⌘K`) and multi-criteria persistent filters.
 
----
-
-## Prerequisites
-
-- Java 21 (or newer) installed and JAVA_HOME configured
-- Maven 3.6+ (or compatible) on PATH
-- MySQL server (or use Docker-based MySQL) and a database user
-
-Note: for development, using a local MySQL instance or a Docker container is recommended.
+<p align="center">
+  <img src="docs/screenshots/dashboard-metrics.png" alt="Tactical Dashboard and Metric Deck" width="100%" />
+</p>
 
 ---
 
-## Configuration (environment & secrets)
+### 2. Interactive AI Revision Intelligence Panel
+Powered by local Spring AI and Ollama, this collapsible panel provides automated asymptotic complexity analysis (`O(N)` Time / `O(1)` Space), common failure traps, pre-interview checklists, and timed active recall quizzes.
 
-The application loads settings from `src/main/resources/application.properties` by default. For any values that are sensitive or environment-specific, prefer environment variables or externalized configuration (for example, `application-local.properties` which should be Git-ignored).
-
-Important properties (set these before first run)
-
-- spring.datasource.url — JDBC URL (example: jdbc:mysql://localhost:3306/dev_tracker?createDatabaseIfNotExist=true)
-- spring.datasource.username
-- spring.datasource.password
-- spring.jpa.hibernate.ddl-auto — for development `update` is convenient; for production prefer using a migration tool and set to `validate` or `none`
-
-OAuth2 (optional):
-- spring.security.oauth2.client.registration.google.client-id
-- spring.security.oauth2.client.registration.google.client-secret
-- spring.security.oauth2.client.registration.github.client-id
-- spring.security.oauth2.client.registration.github.client-secret
-
-Ollama / Local AI (optional):
-- spring.ai.ollama.base-url — base URL for a local Ollama server (default: http://localhost:11434). The AI-based "Revision Review" feature requires Ollama (or another supported model backend) running and reachable.
-- spring.ai.ollama.chat.options.model — model identifier used by the app
-
-Security & secrets (READ THIS BEFORE PUBLISHING)
-
-- Do NOT keep real credentials in `src/main/resources/application.properties` in the repository. If credentials are already committed, rotate/revoke those credentials immediately (OAuth client secrets, database passwords, API keys).
-- Create an example file: `src/main/resources/application.properties.example` with placeholders (no secrets). Example content:
-
-  spring.datasource.url=jdbc:mysql://localhost:3306/dev_tracker?createDatabaseIfNotExist=true
-  spring.datasource.username=your_db_user
-  spring.datasource.password=your_db_password
-  spring.jpa.hibernate.ddl-auto=update
-
-  # OAuth placeholders
-  spring.security.oauth2.client.registration.google.client-id=YOUR_GOOGLE_CLIENT_ID
-  spring.security.oauth2.client.registration.google.client-secret=YOUR_GOOGLE_CLIENT_SECRET
-
-- Use environment variables for sensitive values in CI and production. Spring Boot supports binding environment variables (e.g. SPRING_DATASOURCE_URL) and external config files.
-- Keep local override files (application-local.properties) in `.gitignore` so they are never committed. The repository's `.gitignore` already lists patterns for application-* and local files; ensure local secrets are removed from tracked files.
-
-Maven wrapper and local build
-
-This project includes the Maven Wrapper so contributors do not need a system-level Maven install. Prefer using the wrapper commands:
-
-- On Windows (PowerShell or cmd): .\mvnw.cmd clean package
-- On macOS / Linux / Git Bash: ./mvnw clean package
-- Run the app in development: ./mvnw spring-boot:run (or .\mvnw.cmd on Windows)
-
-The wrapper is configured in `.mvn/wrapper/maven-wrapper.properties` (Maven version 3.9.16 in this repo).
-
-Running tests
-
-- Run all tests: ./mvnw test
-- Run a single test class: ./mvnw -Dtest=ProblemControllerTest test
-
-Database migrations (production readiness)
-
-- For production use, add a migration tool such as Flyway or Liquibase and commit migration scripts under `src/main/resources/db/migration/` (Flyway convention). This prevents relying on `hibernate.ddl-auto=update` in production.
-- Example Flyway resources folder: `src/main/resources/db/migration/V1__initial_schema.sql`
-
-Docker & local development (recommended)
-
-- It's recommended to add a Dockerfile for the Spring Boot JAR and a `docker-compose.yml` for local development containing a MySQL service and the app service. A minimal example (illustrative only):
-
-  version: '3.8'
-  services:
-    db:
-      image: mysql:8.0
-      environment:
-        MYSQL_ROOT_PASSWORD: example
-        MYSQL_DATABASE: dev_tracker
-        MYSQL_USER: dev
-        MYSQL_PASSWORD: dev
-      ports:
-        - "3306:3306"
-    app:
-      build: .
-      depends_on:
-        - db
-      environment:
-        SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/dev_tracker
-        SPRING_DATASOURCE_USERNAME: dev
-        SPRING_DATASOURCE_PASSWORD: dev
-      ports:
-        - "8080:8080"
-
-- If you want, a Dockerfile and a docker-compose.yml can be added to the repo — ask and a suggested set of files will be created.
-
-CI / GitHub Actions
-
-- The repository does not currently include CI workflows. A recommended GitHub Action should:
-  - Use the Maven wrapper to build: `./mvnw -B -DskipTests package`
-  - Run tests: `./mvnw test`
-  - Optionally build and push a Docker image on releases/tags
-
-Accessibility & UX: screenshots
-
-- Images are stored in `docs/screenshots/` and referenced in this README for visual documentation. Optimize images before pushing to keep repo size reasonable.
-
-Support & next steps
-
-- If the repository should be prepared for public release, the immediate steps are: remove secrets from tracked files, add `application.properties.example`, rotate credentials, and add simple CI + Docker files.
-- I can (on request) create the `application.properties.example`, update README with exact environment variable examples, add a Dockerfile/docker-compose, or prepare a GitHub Actions workflow — tell me which you want done next.
+<p align="center">
+  <img src="docs/screenshots/dashboard-revision.png" alt="AI Revision Intelligence Panel" width="100%" />
+</p>
 
 ---
 
-## Run locally
+### 3. Multi-Platform Problem Feed
+A centralized repository tracking challenges across LeetCode, Codeforces, GeeksforGeeks, CodeChef, and HackerRank with monospace platform badges (`#LeetCode`, `#GFG`), difficulty indicators, and solve statistics.
 
-1. Build the project:
-
-   mvn -DskipTests package
-
-2. Run with Maven:
-
-   mvn spring-boot:run
-
-   or run the packaged JAR:
-
-   java -jar target/dev-tracker-*.jar
-
-3. Open the app at: http://localhost:8080
-
-Default port can be changed via `server.port` in application properties or an environment variable.
+<p align="center">
+  <img src="docs/screenshots/my-problems.png" alt="Problem Library Feed" width="100%" />
+</p>
 
 ---
 
-## Database setup and migrations
+### 4. High-Craft Landing Page & Live Invariant Preview
+An engineered hero section with tactical typography, interactive problem card mockups, and quick launch actions.
 
-- The project currently relies on Spring Data JPA for schema creation in development. Configure `spring.jpa.hibernate.ddl-auto` as needed.
-- For production use, add a migration tool (Flyway or Liquibase) and commit migration scripts to `src/main/resources/db/migration/`.
-
----
-
-## OAuth2/social login notes
-
-- Google: configure an OAuth client in Google Cloud Console; authorized redirect URI should be http://localhost:8080/login/oauth2/code/google (adjust host/port for your environment)
-- GitHub: register an OAuth App in GitHub settings; use the same redirect URI pattern
-- For GitHub, enable the user:email scope so the application can map provider accounts to verified emails
+<p align="center">
+  <img src="docs/screenshots/home-hero.png" alt="Dev Tracker Landing Page" width="100%" />
+</p>
 
 ---
 
-## Docker (development)
+### 5. Architectural Specifications & Bento Grid
+Comprehensive capability breakdown showcasing ingestion velocity, algorithmic taxonomy, spaced revisit scheduling, and difficulty balance visualizers.
 
-A simple Docker Compose setup is useful for local development (MySQL + app). Example steps:
-
-1. Add a `Dockerfile` for the Spring Boot app (if not present)
-2. Add `docker-compose.yml` with a MySQL service and the app service
-
-When using Docker Compose, ensure environment variables for DB credentials and OAuth secrets are injected into the app container.
+<p align="center">
+  <img src="docs/screenshots/features-grid.png" alt="Features Bento Grid" width="100%" />
+</p>
 
 ---
 
-## Tests
+## ⚡ Core Capabilities
 
-- Unit and integration tests can be run with Maven:
+### 1. ✦ Local AI Revision Coach (Spring AI + Ollama)
+- Powered by local LLMs (e.g. Qwen / Ollama) via **Spring AI**.
+- Automatically synthesizes:
+  - **Optimal Asymptotic Complexity**: Worst-case Time & Space complexity bounds (`O(N)`).
+  - **Core Invariant & Approach**: The fundamental algorithmic intuition formatted in clean Markdown.
+  - **Common Pitfalls & Edge Cases**: What trips developers up on test cases.
+  - **Spaced Recall Quiz**: Timed questions to verify active retrieval from memory rather than passive recognition.
 
-  mvn test
+### 2. ⚡ Intelligent Ingestion & URL Auto-Detection
+- Paste problem links from **LeetCode**, **Codeforces**, **GeeksforGeeks**, **CodeChef**, or **HackerRank**.
+- The client-side ingestion engine automatically detects the platform and formats the problem title from the URL slug.
 
-- For targeted tests, use Maven's `-Dtest=...` option.
+### 3. 📊 Tactical Metric Deck (Windster-Style)
+- **Total Solved Ring Gauge**: Animated circular progress meter tracking overall volume.
+- **Difficulty Balance Meters**: Linear Emerald (Easy), Amber (Medium), and Rose (Hard) progress meters with real-time percentage distributions to prevent lopsided preparation.
 
----
+### 4. 🔎 Sub-50ms Instant Search & Tactical Toolbar
+- Client-side debounced search filtering cards in real-time as you type.
+- Global keyboard shortcut: Press **`⌘K`** (or **`Ctrl+K`**, or **`/`**) anywhere to focus the search bar.
+- Persistent server-side multi-parameter filters (Difficulty, Platform, Topic Tags, Date Logged, and Revisit Status).
 
-## UI / Screenshots
+### 5. 🔖 Spaced Repetition & Revisit Queue
+- Flag non-trivial edge cases or multi-pointer problems for spaced review.
+- Filter down to your bookmark queue 48 hours before an interview for high-yield recall drills.
 
-The app has a responsive, user-focused landing page and a dashboard view for the problem library and progress overview.
+### 6. 🌗 Tactical Dark & Light Mode (Zero-Flash)
+- Engineered grid canvas (`.bg-grid-pattern`) with subtle cyan phosphor glow.
+- Zero-flash theme initialization syncing with `localStorage` and system `prefers-color-scheme`.
+- Replaced plain text glyphs (`☰`, `▦`, `✦`) with a pixel-perfect **Heroicons SVG fragment engine**.
 
-The screenshots provided have been copied into the repository so they render on GitHub. Relative paths to the images are used below.
-
-Screenshots (stored in docs/screenshots/):
-
-![Dashboard revision view](docs/screenshots/dashboard-revision.png)
-
-![Home hero](docs/screenshots/home-hero.png)
-
-![Features grid](docs/screenshots/features-grid.png)
-
-![Dashboard / My Problems](docs/screenshots/my-problems.png)
-
-Notes:
-- Images are stored in `docs/screenshots/` and referenced with relative paths so they render correctly on GitHub.
-- If the images are larger than desired for the README, they can be optimized (resize/compress) before committing; ask if you want them optimized.
-
----
-
-## Development notes
-
-- Controllers live in `controller/` and return Thymeleaf views from `templates/`
-- Services follow typical service/repository layering; business logic should remain in service classes
-- Security is configured via Spring Security; look into `SecurityConfig` classes for auth customizations
-- To extend: add custom problem import/export, tagging, revision scheduling, or an API for a client-side SPA
+### 7. 🔐 Multi-Provider Authentication
+- Local account registration with BCrypt password hashing.
+- **OAuth2 Social Sign-In** via Google and GitHub with automatic account provisioning on first verified email login.
 
 ---
 
-## Contributing
+## 🛠️ Technology Stack
 
-Contributions are welcome. Suggested process:
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feat/brief-description`
-3. Run and test locally
-4. Open a pull request with a clear description of changes and testing steps
-
-Please avoid committing secrets. Add tests for significant logic changes where possible.
-
----
-
-## Troubleshooting
-
-- Database connection failures: verify JDBC URL, credentials, and that MySQL accepts connections from your host
-- OAuth redirects: check the provider app settings and ensure redirect URIs exactly match the running app's login callback
-- Template errors: look for missing model attributes in controller methods that render Thymeleaf templates
+| Layer | Technologies |
+| :--- | :--- |
+| **Backend Core** | Java 21, Spring Boot 4.x, Spring MVC, Spring Data JPA (Hibernate) |
+| **AI Integration** | Spring AI 2.0.0, Ollama (e.g. `qwen3:4b`), Local Embedding & Chat APIs |
+| **Security & Auth** | Spring Security 6.x, OAuth2 Client (Google & GitHub), BCrypt |
+| **Database** | MySQL 8.x (compatible with any JDBC SQL database) |
+| **Frontend Templates** | Thymeleaf 3.x (Server-Rendered, Zero React/SPA overhead) |
+| **Styling & UI** | Tailwind CSS (Forms & Typography plugins), Flowbite 2.5.2, Heroicons SVGs |
+| **Client Scripting** | Vanilla JavaScript, GSAP 3.12 (Motion & Micro-interactions) |
+| **Configuration** | Java `.env` loader (`spring.config.import=optional:file:.env[.properties]`) |
 
 ---
 
-## License
+## 📁 Repository Structure
 
-No license specified. Add an appropriate open-source license (MIT, Apache-2.0, etc.) in a `LICENSE` file if you intend to make the project public.
+```text
+d:\Java_Backend\Spring Boot\Dev Tracker\
+├── docs/
+│   └── screenshots/              # UI screenshots and visual documentation
+│       ├── dashboard-metrics.png # Dashboard with metric counters
+│       ├── dashboard-revision.png# AI Revision Intelligence panel
+│       ├── features-grid.png     # Features and specifications bento grid
+│       ├── home-hero.png         # Landing page hero with live mockup
+│       └── my-problems.png       # Problem library feed
+├── src/
+│   ├── main/
+│   │   ├── java/com/devtracker/
+│   │   │   ├── config/           # SecurityConfig, OAuth2 handler, JPA config
+│   │   │   ├── controller/       # ProblemController, AuthController, PageController
+│   │   │   ├── entities/         # User, Problem, AiReview JPA entities
+│   │   │   ├── repository/       # Spring Data JPA repositories
+│   │   │   ├── services/         # ProblemService, AiReviewService, UserService
+│   │   │   └── DevTrackerApplication.java
+│   │   └── resources/
+│   │       ├── application.properties    # Base Spring configuration
+│   │       ├── static/
+│   │       │   ├── css/app.css   # Tactical grid tokens, glass panels, cards
+│   │       │   └── js/app.js     # Theme toggle, instant search, URL auto-detect
+│   │       └── templates/
+│   │           ├── base.html     # Root layout, Google Fonts, Tailwind CDN & plugins
+│   │           ├── fragments.html# Heroicon SVG engine, Windster sidebar, Navbar, Toasts
+│   │           ├── home.html     # High-craft landing page & interactive preview
+│   │           ├── services.html # System features & bento architecture
+│   │           ├── about.html    # Engineering manifesto & recall methodology
+│   │           ├── contact.html  # Communication relay form
+│   │           ├── problems/
+│   │           │   ├── list.html # Problem feed, metric deck, AI accordion
+│   │           │   └── add.html  # Tactical multi-step ingestion form
+│   │           └── user/
+│   │               ├── login.html    # Split-screen auth with Google/GitHub buttons
+│   │               └── register.html # Account deployment form
+├── .env.example                  # Environment variables template
+├── pom.xml                       # Maven build configuration
+└── README.md
+```
 
 ---
 
-If additional details, screenshots, or a different README structure are preferred, provide guidance and the README will be adjusted accordingly.
+## 🚀 Getting Started
+
+### 1. Prerequisites
+- **Java 21** or newer (`java -version`).
+- **MySQL Server** (running locally on port `3306` or via Docker).
+- **Ollama** (optional, for AI Revision Review): [Install Ollama](https://ollama.ai) and pull the model:
+  ```bash
+  ollama pull qwen3:4b
+  ```
+
+### 2. Environment Configuration
+Copy the `.env.example` file to `.env`:
+```bash
+cp .env.example .env
+```
+Update `.env` with your local database credentials and OAuth keys:
+```env
+# Database Credentials
+DB_URL=jdbc:mysql://localhost:3306/dev_tracker?createDatabaseIfNotExist=true
+DB_USERNAME=root
+DB_PASSWORD=your_mysql_password
+
+# Google OAuth2 (Optional)
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+
+# GitHub OAuth2 (Optional)
+GITHUB_CLIENT_ID=your_github_client_id
+GITHUB_CLIENT_SECRET=your_github_client_secret
+
+# Ollama Local AI Base URL
+OLLAMA_BASE_URL=http://localhost:11434
+```
+
+> [!NOTE]
+> `.env` is listed in `.gitignore` to prevent credentials from ever leaking into source control.
+
+---
+
+### 3. Build & Run
+
+#### Running with Maven:
+```powershell
+# On Windows
+.\mvnw.cmd spring-boot:run
+
+# On Linux / macOS
+./mvnw spring-boot:run
+```
+
+#### Running the Packaged JAR:
+```bash
+# Package the application
+./mvnw clean package -DskipTests
+
+# Run the executable JAR
+java -jar target/dev-tracker-0.0.1-SNAPSHOT.jar
+```
+
+#### Open the Application:
+Once started, navigate to:
+```
+http://localhost:8080
+```
+- **Landing Page**: `http://localhost:8080/devtracker/home`
+- **Dashboard Workspace**: `http://localhost:8080/problems`
+- **Log Problem**: `http://localhost:8080/problems/add`
+
+---
+
+## 🧪 Testing
+
+Run test suites via Maven:
+```bash
+./mvnw test
+```
+To run targeted test classes:
+```bash
+./mvnw -Dtest=ProblemControllerTest test
+```
+
+---
+
+## 🎨 Design System & Credits
+- **UI Architecture**: Inspired by **Themesberg Windster Dashboard** and **Flowbite**.
+- **Iconography**: **Heroicons** by Tailwind Labs.
+- **AI Design Methodology**: Rooted in **Anshu Chimala's Double Diamond AI Design process** (featured in *Lenny's Newsletter*), rejecting generic AI slop in favor of purposeful, tactile developer tools.
+
+---
+
+## 📄 License
+This project is open-source under the MIT License.

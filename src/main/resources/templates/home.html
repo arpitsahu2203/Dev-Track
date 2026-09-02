@@ -1,1 +1,209 @@
-<!DOCTYPE html><html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base :: layout(~{::main}, 'home')}"><body><main><section class="mx-auto grid max-w-7xl items-center gap-12 px-6 py-16 lg:min-h-[620px] lg:grid-cols-[1.1fr_.9fr] lg:py-24"><div class="reveal"><p class="text-sm font-bold uppercase tracking-[.2em] text-brand-600">Purposeful DSA practice</p><h1 class="mt-5 max-w-3xl text-4xl font-bold leading-tight tracking-tight text-slate-950 sm:text-6xl">Track your DSA journey. Practice with purpose.</h1><p class="mt-6 max-w-2xl text-lg leading-8 text-slate-600">Save every important problem, keep the context behind it, and make revision a clear next step—not a search through old tabs.</p><div class="mt-8 flex flex-wrap gap-3"><a th:href="@{/register}" class="rounded-xl bg-brand-500 px-5 py-3 font-bold text-white hover:bg-brand-600">Start practicing</a><a th:href="@{/devtracker/services}" class="rounded-xl border border-slate-300 px-5 py-3 font-bold text-slate-700 hover:bg-white">Explore features</a></div></div><section class="reveal surface lift p-6 sm:p-8"><p class="font-bold">Practice overview</p><p class="mt-1 text-sm text-slate-500">Your work, organized for recall</p><div class="mt-7 grid grid-cols-3 gap-3"><div class="rounded-xl bg-brand-50 p-4"><p class="text-2xl font-bold text-brand-600">—</p><p class="mt-1 text-xs text-slate-500">Solved</p></div><div class="rounded-xl bg-amber-50 p-4"><p class="text-2xl font-bold text-amber-600">—</p><p class="mt-1 text-xs text-slate-500">Revisit</p></div><div class="rounded-xl bg-violet-50 p-4"><p class="text-2xl font-bold text-violet-600">—</p><p class="mt-1 text-xs text-slate-500">Topics</p></div></div><div class="mt-6 rounded-xl border border-slate-100 p-4 text-sm"><b>Problem library</b><p class="mt-2 text-slate-500">Filter by platform, difficulty, topic, date, attempts, and revision status.</p></div></section></section><section class="border-y border-slate-200 bg-white"><div class="mx-auto max-w-7xl px-6 py-20"><p class="text-sm font-bold uppercase tracking-[.2em] text-brand-600">The challenge</p><h2 class="mt-3 max-w-2xl text-3xl font-bold">Solving a problem is only the first step.</h2><div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"><article class="surface p-5"><h3 class="font-bold">Forgotten solutions</h3><p class="mt-2 text-sm leading-6 text-slate-500">Key ideas disappear after a few weeks.</p></article><article class="surface p-5"><h3 class="font-bold">Scattered practice</h3><p class="mt-2 text-sm leading-6 text-slate-500">Links and notes live across too many places.</p></article><article class="surface p-5"><h3 class="font-bold">Blind spots</h3><p class="mt-2 text-sm leading-6 text-slate-500">Topic coverage stays difficult to understand.</p></article><article class="surface p-5"><h3 class="font-bold">Last-minute revision</h3><p class="mt-2 text-sm leading-6 text-slate-500">Preparation loses structure when time is short.</p></article></div></div></section><section class="mx-auto max-w-7xl px-6 py-20"><div class="grid gap-10 lg:grid-cols-[.8fr_1.2fr]"><div><p class="text-sm font-bold uppercase tracking-[.2em] text-brand-600">A clearer workflow</p><h2 class="mt-3 text-3xl font-bold">Give each problem a useful second life.</h2><p class="mt-4 leading-7 text-slate-600">Dev Tracker turns solved problems into a reusable preparation library.</p></div><ol class="grid gap-4 sm:grid-cols-2"><li class="surface p-5"><span class="text-sm font-bold text-brand-600">01</span><h3 class="mt-3 font-bold">Solve</h3><p class="mt-2 text-sm text-slate-500">Work through a challenge on your platform.</p></li><li class="surface p-5"><span class="text-sm font-bold text-brand-600">02</span><h3 class="mt-3 font-bold">Save</h3><p class="mt-2 text-sm text-slate-500">Capture the link, difficulty, and key context.</p></li><li class="surface p-5"><span class="text-sm font-bold text-brand-600">03</span><h3 class="mt-3 font-bold">Organize</h3><p class="mt-2 text-sm text-slate-500">Use filters to understand your practice.</p></li><li class="surface p-5"><span class="text-sm font-bold text-brand-600">04</span><h3 class="mt-3 font-bold">Review</h3><p class="mt-2 text-sm text-slate-500">Return to marked problems with context ready.</p></li></ol></div></section><section class="bg-slate-950 py-20 text-white"><div class="mx-auto max-w-4xl px-6 text-center"><p class="text-sm font-bold uppercase tracking-[.2em] text-cyan-300">Your preparation, in context</p><h2 class="mt-4 text-3xl font-bold sm:text-4xl">Build a practice record you can actually use.</h2><p class="mx-auto mt-5 max-w-2xl leading-7 text-slate-300">Understand your difficulty balance, topic coverage, attempts, and revision status from the work you have already done.</p><a th:href="@{/register}" class="mt-8 inline-block rounded-xl bg-brand-400 px-5 py-3 font-bold text-slate-950 hover:bg-cyan-300">Create your workspace</a></div></section></main></body></html>
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{base :: layout(~{::main}, 'home')}">
+<body>
+<main class="space-y-20 py-12 lg:space-y-28 lg:py-16">
+    
+    <!-- ==================================================================
+         HERO SECTION: TACTICAL ARCHITECTURE
+         ================================================================== -->
+    <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="grid items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
+            
+            <!-- Left Hero Pitch -->
+            <div class="space-y-6">
+                <div class="inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 font-mono text-xs font-bold text-cyan-700 dark:text-cyan-300">
+                    <span th:replace="~{fragments :: icon('sparkles', 'h-3.5 w-3.5 text-cyan-500')}"></span>
+                    <span>Deliberate DSA Practice OS</span>
+                </div>
+                
+                <h1 class="font-mono text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl dark:text-white">
+                    Turn Solved Problems into <span class="bg-gradient-to-r from-cyan-500 to-indigo-500 bg-clip-text text-transparent">Permanent Instinct.</span>
+                </h1>
+                
+                <p class="max-w-xl text-base leading-7 text-slate-600 dark:text-slate-400">
+                    Solving a problem is only step one. Dev Tracker captures your core intuition, generates automated AI revision breakdowns, and organizes your preparation so you never blank out in an interview.
+                </p>
+
+                <div class="flex flex-wrap items-center gap-3 pt-2">
+                    <a th:href="@{/register}" 
+                       class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-600 px-5 py-3 font-mono text-xs font-bold text-slate-950 shadow-lg shadow-cyan-500/25 transition hover:from-cyan-400 hover:to-cyan-500">
+                        <span>Launch Workspace</span>
+                        <span th:replace="~{fragments :: icon('chevron-right', 'h-3.5 w-3.5 stroke-[2.5]')}"></span>
+                    </a>
+                    <a th:href="@{/devtracker/services}" 
+                       class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white/80 px-5 py-3 font-mono text-xs font-semibold text-slate-700 backdrop-blur transition hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300 dark:hover:bg-slate-800">
+                        <span>Explore System</span>
+                    </a>
+                </div>
+
+                <div class="flex items-center gap-6 pt-4 font-mono text-xs text-slate-400 dark:text-slate-500">
+                    <span class="flex items-center gap-1.5">
+                        <span th:replace="~{fragments :: icon('check-circle', 'h-4 w-4 text-emerald-500')}"></span>
+                        <span>Zero AI Slop</span>
+                    </span>
+                    <span class="flex items-center gap-1.5">
+                        <span th:replace="~{fragments :: icon('check-circle', 'h-4 w-4 text-cyan-500')}"></span>
+                        <span>Multi-Platform Ingest</span>
+                    </span>
+                    <span class="flex items-center gap-1.5">
+                        <span th:replace="~{fragments :: icon('check-circle', 'h-4 w-4 text-violet-500')}"></span>
+                        <span>Active Recall Coach</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Right Interactive Card Mockup -->
+            <div class="tactical-card p-6 shadow-2xl dark:shadow-cyan-950/10">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
+                    <div class="flex items-center gap-2">
+                        <span class="h-2.5 w-2.5 rounded-full bg-rose-500"></span>
+                        <span class="h-2.5 w-2.5 rounded-full bg-amber-500"></span>
+                        <span class="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
+                        <span class="ml-2 font-mono text-[10px] text-slate-400">problem_0042.log</span>
+                    </div>
+                    <span class="rounded bg-cyan-500/10 px-2 py-0.5 font-mono text-[10px] font-bold text-cyan-600 dark:text-cyan-400">LIVE PREVIEW</span>
+                </div>
+
+                <!-- Problem Card Demo -->
+                <div class="mt-4 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="rounded bg-slate-100 px-2 py-0.5 font-mono text-xs font-bold text-slate-800 dark:bg-slate-800 dark:text-slate-200">#LC</span>
+                            <span class="font-mono text-sm font-bold text-slate-900 dark:text-white">0042. Trapping Rain Water</span>
+                        </div>
+                        <span class="rounded-full bg-rose-500/15 px-2.5 py-0.5 font-mono text-[10px] font-bold text-rose-500">HARD</span>
+                    </div>
+
+                    <div class="flex flex-wrap gap-1.5">
+                        <span class="rounded border border-cyan-500/20 bg-cyan-500/5 px-2 py-0.5 font-mono text-[10px] text-cyan-600 dark:text-cyan-300">Two Pointers</span>
+                        <span class="rounded border border-cyan-500/20 bg-cyan-500/5 px-2 py-0.5 font-mono text-[10px] text-cyan-600 dark:text-cyan-300">Monotonic Stack</span>
+                    </div>
+
+                    <!-- AI Revision Panel Mockup -->
+                    <div class="rounded-xl border border-violet-200 bg-violet-50/50 p-4 dark:border-violet-900/40 dark:bg-violet-950/20 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-1.5 text-xs font-bold text-violet-700 dark:text-violet-300">
+                                <span th:replace="~{fragments :: icon('sparkles', 'h-3.5 w-3.5 text-violet-500')}"></span>
+                                <span class="font-mono text-[11px] uppercase tracking-wider">AI Revision Intelligence</span>
+                            </div>
+                            <span class="font-mono text-[10px] text-violet-600 dark:text-violet-400">O(N) Time · O(1) Space</span>
+                        </div>
+                        <p class="text-xs text-slate-600 dark:text-slate-300">
+                            <strong>Core Invariant:</strong> Water trapped above any bar is bounded by the minimum of the maximum height to its left and right.
+                        </p>
+                        <div class="flex items-center gap-2 pt-1">
+                            <span class="rounded bg-emerald-500/15 px-2 py-0.5 font-mono text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">Next Revision: 3 Days</span>
+                            <span class="rounded bg-amber-500/15 px-2 py-0.5 font-mono text-[10px] font-semibold text-amber-600 dark:text-amber-400">Avoid: O(N) Space trap</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Footnote -->
+                <div class="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 font-mono text-[10px] text-slate-400 dark:border-slate-800">
+                    <span>Solved in 24m · 2 Attempts</span>
+                    <span class="text-cyan-500">★ Ready for Mock Interview</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ==================================================================
+         BENTO GRID: TACTICAL CAPABILITIES
+         ================================================================== -->
+    <section class="border-y border-slate-200/80 bg-white/40 py-16 backdrop-blur dark:border-slate-800/80 dark:bg-slate-900/30">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-12">
+            <div class="max-w-2xl space-y-2">
+                <span class="font-mono text-[11px] font-bold uppercase tracking-widest text-cyan-600 dark:text-cyan-400">Command Architecture</span>
+                <h2 class="font-mono text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Engineered for Recall, Not Just Solved Counts.</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Most engineers forget 70% of solved algorithms within 3 weeks. Dev Tracker eliminates the forgetting curve.</p>
+            </div>
+
+            <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <!-- Bento 1 -->
+                <article class="tactical-card p-6 space-y-3">
+                    <span class="grid h-10 w-10 place-items-center rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400" th:replace="~{fragments :: icon('sparkles', 'h-5 w-5')}"></span>
+                    <h3 class="font-mono text-base font-bold text-slate-900 dark:text-white">AI Revision Intelligence</h3>
+                    <p class="text-xs leading-5 text-slate-500 dark:text-slate-400">
+                        Local AI analyzes your problem notes to generate complexity breakdowns, edge-case traps, and timed active recall quizzes.
+                    </p>
+                </article>
+
+                <!-- Bento 2 -->
+                <article class="tactical-card p-6 space-y-3">
+                    <span class="grid h-10 w-10 place-items-center rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" th:replace="~{fragments :: icon('grid', 'h-5 w-5')}"></span>
+                    <h3 class="font-mono text-base font-bold text-slate-900 dark:text-white">Unified Platform Ingestion</h3>
+                    <p class="text-xs leading-5 text-slate-500 dark:text-slate-400">
+                        Track challenges from LeetCode, Codeforces, GeeksforGeeks, CodeChef, and HackerRank in a single tactical feed.
+                    </p>
+                </article>
+
+                <!-- Bento 3 -->
+                <article class="tactical-card p-6 space-y-3">
+                    <span class="grid h-10 w-10 place-items-center rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400" th:replace="~{fragments :: icon('bookmark', 'h-5 w-5')}"></span>
+                    <h3 class="font-mono text-base font-bold text-slate-900 dark:text-white">Spaced Repetition Flagging</h3>
+                    <p class="text-xs leading-5 text-slate-500 dark:text-slate-400">
+                        Mark tricky problems for targeted revision. Create a high-yield refresh queue 48 hours before an on-site interview.
+                    </p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================================================================
+         EXECUTION LOOP: DELIBERATE PRACTICE
+         ================================================================== -->
+    <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-12">
+        <div class="text-center max-w-2xl mx-auto space-y-2">
+            <span class="font-mono text-[11px] font-bold uppercase tracking-widest text-cyan-600 dark:text-cyan-400">Practice Protocol</span>
+            <h2 class="font-mono text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">The 4-Step Retention Loop</h2>
+        </div>
+
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="tactical-card p-6 space-y-3">
+                <span class="font-mono text-2xl font-black text-cyan-500">01</span>
+                <h3 class="font-mono text-sm font-bold text-slate-900 dark:text-white">Solve with Intent</h3>
+                <p class="text-xs leading-5 text-slate-500 dark:text-slate-400">Work through the problem on your favorite judge platform without looking at solutions early.</p>
+            </div>
+            <div class="tactical-card p-6 space-y-3">
+                <span class="font-mono text-2xl font-black text-cyan-500">02</span>
+                <h3 class="font-mono text-sm font-bold text-slate-900 dark:text-white">Ingest in 20s</h3>
+                <p class="text-xs leading-5 text-slate-500 dark:text-slate-400">Paste the URL. Dev Tracker auto-detects platform, title, and allows quick topic chip selection.</p>
+            </div>
+            <div class="tactical-card p-6 space-y-3">
+                <span class="font-mono text-2xl font-black text-cyan-500">03</span>
+                <h3 class="font-mono text-sm font-bold text-slate-900 dark:text-white">Generate Review</h3>
+                <p class="text-xs leading-5 text-slate-500 dark:text-slate-400">AI extracts optimal complexity bounds and constructs pre-interview checklists.</p>
+            </div>
+            <div class="tactical-card p-6 space-y-3">
+                <span class="font-mono text-2xl font-black text-cyan-500">04</span>
+                <h3 class="font-mono text-sm font-bold text-slate-900 dark:text-white">Timed Recall</h3>
+                <p class="text-xs leading-5 text-slate-500 dark:text-slate-400">Filter by revisit flags and test your instinct against AI self-quizzes before your interview.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================================================================
+         CALL TO ACTION: LAUNCH COMMAND
+         ================================================================== -->
+    <section class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 p-8 sm:p-12 text-center text-white border border-slate-800 shadow-2xl">
+            <div class="relative z-10 space-y-4 max-w-2xl mx-auto">
+                <span class="font-mono text-[11px] font-bold uppercase tracking-widest text-cyan-400">Deploy Workspace</span>
+                <h2 class="font-mono text-3xl font-extrabold sm:text-4xl">Ready to Upgrade Your Algorithmic Preparation?</h2>
+                <p class="text-xs leading-6 text-slate-400">Log your first problem today and build an interview-ready library that compounds over time.</p>
+                <div class="pt-2">
+                    <a th:href="@{/register}" 
+                       class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-400 to-cyan-500 px-6 py-3 font-mono text-xs font-bold text-slate-950 shadow-lg shadow-cyan-500/20 hover:from-cyan-300 hover:to-cyan-400">
+                        <span>Create Free Account</span>
+                        <span th:replace="~{fragments :: icon('chevron-right', 'h-3.5 w-3.5 stroke-[2.5]')}"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+</body>
+</html>

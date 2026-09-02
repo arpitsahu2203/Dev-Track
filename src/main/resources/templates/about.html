@@ -1,64 +1,68 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base :: layout(~{::main}, 'about')}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{base :: layout(~{::main}, 'about')}">
 <body>
-<main>
-    <section class="mx-auto max-w-6xl px-6 py-16 lg:py-24">
-        <div class="reveal max-w-3xl">
-            <p class="text-sm font-bold uppercase tracking-[.2em] text-brand-600">About Dev Tracker</p>
-            <h1 class="mt-4 text-4xl font-bold tracking-tight text-slate-950 sm:text-5xl">Practice deliberately. Revise with confidence.</h1>
-            <p class="mt-6 text-lg leading-8 text-slate-600">Dev Tracker exists for developers who want their DSA practice to be more than a growing solved count. It is a quiet place to turn completed problems into knowledge you can use again.</p>
-        </div>
+<main class="space-y-16 py-12 lg:space-y-24 lg:py-16">
+    
+    <!-- Hero Editorial -->
+    <section class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 space-y-6">
+        <span class="font-mono text-[11px] font-bold uppercase tracking-widest text-cyan-600 dark:text-cyan-400">Engineering Manifesto</span>
+        <h1 class="font-mono text-3xl font-extrabold tracking-tight sm:text-5xl text-slate-900 dark:text-white">
+            Why Random Problem Grinding Fails.
+        </h1>
+        <p class="text-base leading-8 text-slate-600 dark:text-slate-300">
+            Most software engineers approach technical interview preparation by opening a problem list and solving 300 questions at random. Three weeks later, 80% of the approaches have faded from memory.
+        </p>
+        <p class="text-xs leading-6 text-slate-500 dark:text-slate-400">
+            Cognitive psychology has consistently shown that <em>retrieval practice</em> and <em>spaced repetition</em> trump sheer exposure. Dev Tracker is engineered around this single fundamental truth.
+        </p>
     </section>
-    <section class="border-y border-slate-200 bg-white">
-        <div class="mx-auto grid max-w-6xl gap-10 px-6 py-20 lg:grid-cols-2">
-            <div class="reveal">
-                <p class="text-sm font-bold uppercase tracking-[.2em] text-brand-600">Why it exists</p>
-                <h2 class="mt-3 text-3xl font-bold">Unstructured practice makes strong preparation harder.</h2>
-                <p class="mt-5 leading-7 text-slate-600">A useful solution can disappear into browser history. A difficult topic can remain invisible in a long list of solved questions. And when an interview approaches, it should be easy to find exactly what needs another pass.</p>
-            </div>
-            <div class="reveal grid gap-4 sm:grid-cols-2">
-                <article class="surface p-5">
-                    <h3 class="font-bold">Keep the context</h3>
-                    <p class="mt-2 text-sm leading-6 text-slate-500">Links, platforms, difficulty, topics, attempts, and your own notes stay connected.</p>
-                </article><article class="surface p-5">
-                <h3 class="font-bold">See your balance</h3>
-                <p class="mt-2 text-sm leading-6 text-slate-500">Review the distribution of practice instead of relying on memory.</p>
-            </article><article class="surface p-5">
-                <h3 class="font-bold">Return with purpose</h3>
-                <p class="mt-2 text-sm leading-6 text-slate-500">Mark questions for revision and return to the original details quickly.</p>
+
+    <!-- The 3 Core Pillars -->
+    <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="grid gap-6 md:grid-cols-3">
+            
+            <article class="tactical-card p-6 space-y-3">
+                <span class="font-mono text-2xl font-black text-cyan-500">I</span>
+                <h2 class="font-mono text-base font-bold text-slate-900 dark:text-white">Immediacy Over Volume</h2>
+                <p class="text-xs leading-6 text-slate-500 dark:text-slate-400">
+                    The 5 minutes immediately after solving an algorithm is when your mind understands the subtle invariants, edge-case constraints, and state transitions best. Logging takes 20 seconds and preserves that insight forever.
+                </p>
             </article>
-                <article class="surface p-5">
-                    <h3 class="font-bold">Build a habit</h3>
-                    <p class="mt-2 text-sm leading-6 text-slate-500">A small, consistent record makes deliberate practice easier to sustain.</p>
-                </article>
+
+            <article class="tactical-card p-6 space-y-3">
+                <span class="font-mono text-2xl font-black text-cyan-500">II</span>
+                <h2 class="font-mono text-base font-bold text-slate-900 dark:text-white">Asymptotic Precision</h2>
+                <p class="text-xs leading-6 text-slate-500 dark:text-slate-400">
+                    Interviewers test whether you can reason about memory limits and worst-case time bounds. Dev Tracker pairs every logged problem with AI complexity verification so you know exactly why O(N) beats O(N²).
+                </p>
+            </article>
+
+            <article class="tactical-card p-6 space-y-3">
+                <span class="font-mono text-2xl font-black text-cyan-500">III</span>
+                <h2 class="font-mono text-base font-bold text-slate-900 dark:text-white">Active Recall Checkpoints</h2>
+                <p class="text-xs leading-6 text-slate-500 dark:text-slate-400">
+                    Re-reading a solution is passive recognition—it tricks you into feeling competent. True test readiness requires generating the approach from scratch. Dev Tracker’s AI self-quiz ensures active recall before interviews.
+                </p>
+            </article>
+
+        </div>
+    </section>
+
+    <!-- Bottom Action -->
+    <section class="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
+        <div class="tactical-card p-8 sm:p-10 space-y-4">
+            <h2 class="font-mono text-xl font-bold text-slate-900 dark:text-white">Start Practicing with Intention.</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">Build your permanent personal repository of algorithmic mastery today.</p>
+            <div class="pt-2">
+                <a th:href="@{/register}" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-600 px-5 py-2.5 font-mono text-xs font-bold text-slate-950 shadow-md hover:from-cyan-400 hover:to-cyan-500">
+                    <span>Deploy Account</span>
+                    <span th:replace="~{fragments :: icon('chevron-right', 'h-3.5 w-3.5 stroke-[2.5]')}"></span>
+                </a>
             </div>
         </div>
     </section>
-    <section class="mx-auto max-w-6xl px-6 py-20">
-        <div class="reveal max-w-2xl">
-            <p class="text-sm font-bold uppercase tracking-[.2em] text-brand-600">Product philosophy</p>
-            <h2 class="mt-3 text-3xl font-bold">Clarity over clutter.</h2>
-            <p class="mt-4 leading-7 text-slate-600">Dev Tracker is built around information that helps you decide what to do next. It avoids invented scores and distractions, and instead gives your existing practice a reliable structure.</p>
-        </div>
-        <div class="mt-10 grid gap-5 md:grid-cols-3">
-            <article class="reveal border-l-2 border-brand-500 pl-5">
-                <h3 class="font-bold">Focused</h3>
-                <p class="mt-2 text-sm leading-6 text-slate-500">The workspace puts your problems and revision information first.</p>
-            </article><article class="reveal border-l-2 border-violet-500 pl-5">
-            <h3 class="font-bold">Reflective</h3>
-            <p class="mt-2 text-sm leading-6 text-slate-500">AI review is there to support revision, not replace thoughtful practice.</p>
-        </article><article class="reveal border-l-2 border-emerald-500 pl-5"><h3 class="font-bold">Personal</h3>
-            <p class="mt-2 text-sm leading-6 text-slate-500">Your preparation record belongs to your own learning journey.</p>
-        </article>
-        </div>
-    </section>
-    <section class="bg-slate-950 py-16 text-white">
-        <div class="mx-auto max-w-4xl px-6 text-center">
-            <h2 class="text-3xl font-bold">Built for the long path to mastery.</h2>
-            <p class="mt-4 text-slate-300">Whether you are starting DSA practice, preparing for an interview, or returning to fundamentals, organize your work around what you want to remember.</p>
-            <a th:href="@{/register}" class="mt-7 inline-block rounded-xl bg-brand-400 px-5 py-3 font-bold text-slate-950">Start your workspace</a>
-        </div>
-    </section>
+
 </main>
 </body>
 </html>

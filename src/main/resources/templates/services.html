@@ -1,1 +1,107 @@
-<!DOCTYPE html><html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base :: layout(~{::main}, 'services')}"><body><main><section class="mx-auto max-w-6xl px-6 py-16 text-center lg:py-24"><div class="reveal mx-auto max-w-3xl"><p class="text-sm font-bold uppercase tracking-[.2em] text-brand-600">Everything in one place</p><h1 class="mt-4 text-4xl font-bold tracking-tight text-slate-950 sm:text-5xl">A simpler system for sharper practice.</h1><p class="mt-5 text-lg leading-8 text-slate-600">The details you need to revisit a problem are kept together, searchable, and ready when preparation matters.</p></div></section><section class="border-y border-slate-200 bg-white"><div class="mx-auto max-w-6xl px-6 py-20"><div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3"><article class="reveal surface lift p-6"><span class="text-xl text-brand-600">▣</span><h2 class="mt-4 text-xl font-bold">Problem library</h2><p class="mt-3 leading-7 text-slate-600">Collect coding problems from LeetCode, Codeforces, GFG, CodeChef, HackerRank, or any custom source.</p></article><article class="reveal surface lift p-6"><span class="text-xl text-brand-600">⌘</span><h2 class="mt-4 text-xl font-bold">Topic organization</h2><p class="mt-3 leading-7 text-slate-600">Tag each problem with concepts such as arrays, graphs, trees, or dynamic programming.</p></article><article class="reveal surface lift p-6"><span class="text-xl text-amber-600">◐</span><h2 class="mt-4 text-xl font-bold">Difficulty balance</h2><p class="mt-3 leading-7 text-slate-600">Keep easy, medium, and hard practice visible to build a more balanced preparation plan.</p></article><article class="reveal surface lift p-6"><span class="text-xl text-brand-600">⌕</span><h2 class="mt-4 text-xl font-bold">Useful filters</h2><p class="mt-3 leading-7 text-slate-600">Find work by platform, topic, date, attempts, difficulty, or revisit status without changing your workflow.</p></article><article class="reveal surface lift p-6"><span class="text-xl text-emerald-600">↻</span><h2 class="mt-4 text-xl font-bold">Revision management</h2><p class="mt-3 leading-7 text-slate-600">Mark questions worth another look and create a focused revision list before an interview or contest.</p></article><article class="reveal surface lift p-6"><span class="text-xl text-violet-600">✦</span><h2 class="mt-4 text-xl font-bold">AI revision review</h2><p class="mt-3 leading-7 text-slate-600">Generate guided recall prompts, likely pitfalls, and revision notes from saved problem context.</p></article></div></div></section><section class="mx-auto max-w-6xl px-6 py-20"><div class="grid gap-10 lg:grid-cols-2"><div class="reveal"><p class="text-sm font-bold uppercase tracking-[.2em] text-brand-600">Designed for real preparation</p><h2 class="mt-3 text-3xl font-bold">From a solved question to a reliable reference.</h2><p class="mt-4 leading-7 text-slate-600">Each feature supports a simple loop: capture the work while it is fresh, organize it with lightweight metadata, then return when you need to strengthen recall.</p></div><div class="reveal surface p-6"><ol class="space-y-5"><li class="flex gap-4"><span class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-brand-50 font-bold text-brand-600">1</span><div><h3 class="font-bold">Save the details</h3><p class="mt-1 text-sm text-slate-500">Record the platform, link, difficulty, and a brief description.</p></div></li><li class="flex gap-4"><span class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-brand-50 font-bold text-brand-600">2</span><div><h3 class="font-bold">Add learning context</h3><p class="mt-1 text-sm text-slate-500">Track topics, attempts, solve date, and whether a revision is useful.</p></div></li><li class="flex gap-4"><span class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-brand-50 font-bold text-brand-600">3</span><div><h3 class="font-bold">Review with intent</h3><p class="mt-1 text-sm text-slate-500">Filter the library and use the AI review when you need a structured refresher.</p></div></li></ol></div></div></section><section class="bg-slate-950 py-16 text-white"><div class="mx-auto max-w-4xl px-6 text-center"><h2 class="text-3xl font-bold">Ready to make your practice easier to revisit?</h2><p class="mt-4 text-slate-300">Start with one solved problem and build a clearer preparation record over time.</p><a th:href="@{/register}" class="mt-7 inline-block rounded-xl bg-brand-400 px-5 py-3 font-bold text-slate-950">Create an account</a></div></section></main></body></html>
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{base :: layout(~{::main}, 'services')}">
+<body>
+<main class="space-y-16 py-12 lg:space-y-24 lg:py-16">
+    
+    <!-- Header -->
+    <section class="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8 space-y-4">
+        <span class="font-mono text-[11px] font-bold uppercase tracking-widest text-cyan-600 dark:text-cyan-400">Tactical Specifications</span>
+        <h1 class="font-mono text-3xl font-extrabold tracking-tight sm:text-5xl text-slate-900 dark:text-white">
+            Architecture for Intentional Mastery.
+        </h1>
+        <p class="text-sm leading-7 text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+            Every feature in Dev Tracker is engineered to bridge the gap between solving a problem today and recalling its invariant in an interview 6 months later.
+        </p>
+    </section>
+
+    <!-- Bento Grid of System Capabilities -->
+    <section class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            
+            <article class="tactical-card p-6 space-y-3.5">
+                <div class="flex items-center justify-between">
+                    <span class="grid h-10 w-10 place-items-center rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400" th:replace="~{fragments :: icon('terminal', 'h-5 w-5')}"></span>
+                    <span class="font-mono text-[10px] font-bold text-slate-400">INGESTION</span>
+                </div>
+                <h2 class="font-mono text-base font-bold text-slate-900 dark:text-white">Multi-Platform Log</h2>
+                <p class="text-xs leading-5 text-slate-500 dark:text-slate-400">
+                    One universal library for LeetCode, Codeforces, GeeksforGeeks, CodeChef, and HackerRank. Paste problem URLs to auto-detect names and platforms.
+                </p>
+            </article>
+
+            <article class="tactical-card p-6 space-y-3.5">
+                <div class="flex items-center justify-between">
+                    <span class="grid h-10 w-10 place-items-center rounded-xl bg-violet-500/10 text-violet-600 dark:text-violet-400" th:replace="~{fragments :: icon('sparkles', 'h-5 w-5')}"></span>
+                    <span class="font-mono text-[10px] font-bold text-violet-500">INTELLIGENCE</span>
+                </div>
+                <h2 class="font-mono text-base font-bold text-slate-900 dark:text-white">AI Revision Coach</h2>
+                <p class="text-xs leading-5 text-slate-500 dark:text-slate-400">
+                    Local Ollama integration analyzes your problem descriptions to generate optimal asymptotic complexity, failure points, and active recall tests.
+                </p>
+            </article>
+
+            <article class="tactical-card p-6 space-y-3.5">
+                <div class="flex items-center justify-between">
+                    <span class="grid h-10 w-10 place-items-center rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" th:replace="~{fragments :: icon('grid', 'h-5 w-5')}"></span>
+                    <span class="font-mono text-[10px] font-bold text-emerald-600">TAXONOMY</span>
+                </div>
+                <h2 class="font-mono text-base font-bold text-slate-900 dark:text-white">Algorithmic Categorization</h2>
+                <p class="text-xs leading-5 text-slate-500 dark:text-slate-400">
+                    Over 40 categorized topic chips across Fundamentals, Linear Data Structures, Trees, Graphs, and Dynamic Programming for precise blindspot discovery.
+                </p>
+            </article>
+
+            <article class="tactical-card p-6 space-y-3.5">
+                <div class="flex items-center justify-between">
+                    <span class="grid h-10 w-10 place-items-center rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400" th:replace="~{fragments :: icon('bookmark', 'h-5 w-5')}"></span>
+                    <span class="font-mono text-[10px] font-bold text-amber-600">RETENTION</span>
+                </div>
+                <h2 class="font-mono text-base font-bold text-slate-900 dark:text-white">Spaced Revisit Queue</h2>
+                <p class="text-xs leading-5 text-slate-500 dark:text-slate-400">
+                    Flag non-trivial algorithmic edge cases for spaced repetition. Filter down to your bookmark queue 48 hours before an interview loop.
+                </p>
+            </article>
+
+            <article class="tactical-card p-6 space-y-3.5">
+                <div class="flex items-center justify-between">
+                    <span class="grid h-10 w-10 place-items-center rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-400" th:replace="~{fragments :: icon('fire', 'h-5 w-5')}"></span>
+                    <span class="font-mono text-[10px] font-bold text-rose-600">BALANCE</span>
+                </div>
+                <h2 class="font-mono text-base font-bold text-slate-900 dark:text-white">Difficulty Distribution</h2>
+                <p class="text-xs leading-5 text-slate-500 dark:text-slate-400">
+                    Visual percentage meters ensure you don't over-index on Easy warmup problems or get demoralized by solving only Hard problems without balance.
+                </p>
+            </article>
+
+            <article class="tactical-card p-6 space-y-3.5">
+                <div class="flex items-center justify-between">
+                    <span class="grid h-10 w-10 place-items-center rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400" th:replace="~{fragments :: icon('search', 'h-5 w-5')}"></span>
+                    <span class="font-mono text-[10px] font-bold text-cyan-600">VELOCITY</span>
+                </div>
+                <h2 class="font-mono text-base font-bold text-slate-900 dark:text-white">Sub-50ms Filter Toolbar</h2>
+                <p class="text-xs leading-5 text-slate-500 dark:text-slate-400">
+                    Instant client-side debounced search with ⌘K keyboard shortcut, plus comprehensive server-side multi-parameter persistence filters.
+                </p>
+            </article>
+
+        </div>
+    </section>
+
+    <!-- Bottom Action -->
+    <section class="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
+        <div class="tactical-card p-8 sm:p-10 space-y-4">
+            <h2 class="font-mono text-2xl font-bold text-slate-900 dark:text-white">Built by Developers, for Deliberate Preparation.</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">Start recording your practice today and enter your next interview with conviction.</p>
+            <div class="pt-2">
+                <a th:href="@{/register}" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-600 px-5 py-2.5 font-mono text-xs font-bold text-slate-950 shadow-md hover:from-cyan-400 hover:to-cyan-500">
+                    <span>Create Your Dojo</span>
+                    <span th:replace="~{fragments :: icon('chevron-right', 'h-3.5 w-3.5 stroke-[2.5]')}"></span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+</main>
+</body>
+</html>

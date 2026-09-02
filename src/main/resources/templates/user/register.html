@@ -1,1 +1,86 @@
-<!DOCTYPE html><html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base :: layout(~{::main}, 'register')}"><body><main class="mx-auto max-w-xl px-6 py-14"><section class="reveal surface p-6 sm:p-8"><p class="text-sm font-bold uppercase tracking-[.2em] text-brand-600">Create account</p><h1 class="mt-3 text-3xl font-bold">Start tracking with intention.</h1><p class="mt-2 text-slate-600">Build a clean record for every step of your DSA journey.</p><form th:action="@{/register}" th:object="${userForm}" method="post" class="mt-7 space-y-5"><div><label for="name" class="mb-2 block text-sm font-semibold">Username</label><input id="name" type="text" th:field="*{name}" class="field"><p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="mt-2 text-sm text-rose-600"></p></div><div><label for="email" class="mb-2 block text-sm font-semibold">Email</label><input id="email" type="email" th:field="*{email}" class="field"><p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="mt-2 text-sm text-rose-600"></p></div><div><label for="phoneNumber" class="mb-2 block text-sm font-semibold">Phone number</label><input id="phoneNumber" type="text" th:field="*{phoneNumber}" class="field"><p th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}" class="mt-2 text-sm text-rose-600"></p></div><div><label for="password" class="mb-2 block text-sm font-semibold">Password</label><input id="password" type="password" th:field="*{password}" class="field"><p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="mt-2 text-sm text-rose-600"></p></div><button type="submit" class="w-full rounded-xl bg-brand-500 px-5 py-3 font-bold text-white hover:bg-brand-600">Create account</button></form><div class="my-6 flex items-center gap-3 text-xs text-slate-400"><span class="h-px flex-1 bg-slate-200"></span>OR SIGN UP WITH<span class="h-px flex-1 bg-slate-200"></span></div><div class="grid gap-3"><a th:href="@{/oauth2/authorization/google}" class="oauth-button"><svg aria-hidden="true" viewBox="0 0 24 24" class="h-5 w-5"><path fill="#4285F4" d="M21.8 12.2c0-.7-.1-1.4-.2-2H12v3.8h5.5a4.7 4.7 0 0 1-2 3.1v2.5h3.2c1.9-1.8 3.1-4.4 3.1-7.4Z"/><path fill="#34A853" d="M12 22c2.7 0 5-.9 6.7-2.4l-3.2-2.5c-.9.6-2 .9-3.5.9-2.7 0-5-1.8-5.8-4.3H2.9v2.6A10 10 0 0 0 12 22Z"/><path fill="#FBBC05" d="M6.2 13.7a6 6 0 0 1 0-3.4V7.7H2.9a10 10 0 0 0 0 8.6l3.3-2.6Z"/><path fill="#EA4335" d="M12 6c1.6 0 3 .5 4.1 1.6l3.1-3A10 10 0 0 0 2.9 7.7l3.3 2.6C7 7.8 9.3 6 12 6Z"/></svg>Continue with Google</a><a th:href="@{/oauth2/authorization/github}" class="oauth-button"><span aria-hidden="true">◉</span>Continue with GitHub</a></div></section></main></body></html>
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" 
+      th:replace="~{base :: layout(~{::main}, 'register')}">
+<body>
+<main class="mx-auto max-w-xl px-4 py-12 sm:px-6 lg:px-8">
+    <div class="tactical-card p-6 sm:p-8 space-y-6">
+        
+        <!-- Header -->
+        <div class="space-y-1 text-center sm:text-left">
+            <span class="font-mono text-[11px] font-bold uppercase tracking-widest text-cyan-600 dark:text-cyan-400">Account Deployment</span>
+            <h1 class="font-mono text-2xl font-extrabold text-slate-900 dark:text-white">Create Tactical Workspace</h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Start logging problems and unlocking AI revision coaching.</p>
+        </div>
+
+        <!-- Registration Form -->
+        <form th:action="@{/register}" th:object="${userForm}" method="post" class="space-y-4">
+            
+            <!-- Username -->
+            <div>
+                <label for="name" class="mb-1 block font-mono text-xs font-semibold text-slate-700 dark:text-slate-300">Username / Handle</label>
+                <input id="name" type="text" th:field="*{name}" placeholder="e.g. AlgoMaster" required
+                       class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-xs text-slate-900 focus:border-cyan-500 focus:bg-white focus:ring-1 focus:ring-cyan-500 dark:border-slate-800 dark:bg-slate-900 dark:text-white">
+                <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="mt-1 font-mono text-xs text-rose-500"></p>
+            </div>
+
+            <!-- Email -->
+            <div>
+                <label for="email" class="mb-1 block font-mono text-xs font-semibold text-slate-700 dark:text-slate-300">Email Address</label>
+                <input id="email" type="email" th:field="*{email}" placeholder="you@domain.io" required
+                       class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-xs text-slate-900 focus:border-cyan-500 focus:bg-white focus:ring-1 focus:ring-cyan-500 dark:border-slate-800 dark:bg-slate-900 dark:text-white">
+                <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="mt-1 font-mono text-xs text-rose-500"></p>
+            </div>
+
+            <!-- Phone Number -->
+            <div>
+                <label for="phoneNumber" class="mb-1 block font-mono text-xs font-semibold text-slate-700 dark:text-slate-300">Phone Number (Optional)</label>
+                <input id="phoneNumber" type="text" th:field="*{phoneNumber}" placeholder="+1 555 0192"
+                       class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-xs text-slate-900 focus:border-cyan-500 focus:bg-white focus:ring-1 focus:ring-cyan-500 dark:border-slate-800 dark:bg-slate-900 dark:text-white">
+                <p th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}" class="mt-1 font-mono text-xs text-rose-500"></p>
+            </div>
+
+            <!-- Password -->
+            <div>
+                <label for="password" class="mb-1 block font-mono text-xs font-semibold text-slate-700 dark:text-slate-300">Password</label>
+                <input id="password" type="password" th:field="*{password}" required
+                       class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-xs text-slate-900 focus:border-cyan-500 focus:bg-white focus:ring-1 focus:ring-cyan-500 dark:border-slate-800 dark:bg-slate-900 dark:text-white">
+                <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="mt-1 font-mono text-xs text-rose-500"></p>
+            </div>
+
+            <button type="submit" 
+                    class="w-full rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-600 py-2.5 font-mono text-xs font-bold text-slate-950 shadow-md shadow-cyan-500/20 transition hover:from-cyan-400 hover:to-cyan-500">
+                Deploy My Workspace
+            </button>
+        </form>
+
+        <!-- OAuth Divider -->
+        <div class="flex items-center gap-3 font-mono text-[10px] text-slate-400">
+            <span class="h-px flex-1 bg-slate-200 dark:bg-slate-800"></span>
+            <span>OR SIGN UP WITH</span>
+            <span class="h-px flex-1 bg-slate-200 dark:bg-slate-800"></span>
+        </div>
+
+        <!-- OAuth Action Buttons -->
+        <div class="grid gap-2.5">
+            <a th:href="@{/oauth2/authorization/google}" 
+               class="flex items-center justify-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
+                <span th:replace="~{fragments :: icon('google', 'h-4 w-4')}"></span>
+                <span>Continue with Google</span>
+            </a>
+            <a th:href="@{/oauth2/authorization/github}" 
+               class="flex items-center justify-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
+                <span th:replace="~{fragments :: icon('github', 'h-4 w-4')}"></span>
+                <span>Continue with GitHub</span>
+            </a>
+        </div>
+
+        <!-- Sign In Link -->
+        <div class="text-center font-mono text-xs text-slate-500 dark:text-slate-400">
+            <span>Already have an account?</span>
+            <a th:href="@{/login}" class="font-bold text-cyan-600 hover:underline dark:text-cyan-400"> Sign in</a>
+        </div>
+
+    </div>
+</main>
+</body>
+</html>
