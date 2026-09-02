@@ -32,13 +32,16 @@ build/
 ### VS Code ###
 .vscode/
 
+# Environment variables and secrets
+.env
+secret.txt
+client_secret_*.json
+
+# Output and build artifacts
+output/
+
 # Local Spring Boot configuration overrides
 src/main/resources/application.properties
 src/main/resources/application-*.properties
 src/main/resources/*local*.properties
 
-# Local Spring Boot configuration overrides
-src/main/resources/application-*.properties
-src/main/resources/*local*.properties
-secret.txt
-client_secret_*.json

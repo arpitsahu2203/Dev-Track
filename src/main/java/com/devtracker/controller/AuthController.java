@@ -59,7 +59,7 @@ public class AuthController {
                 .phoneNumber(userForm.getPhoneNumber())
                 .password(passwordEncoder.encode(userForm.getPassword()))
                 .emailVerified(false)
-                .enabled(true)
+                .enabled(true)-
                 .build();
 
         userService.saveUser(user);
