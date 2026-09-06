@@ -31,7 +31,7 @@ The command center dashboard features real-time volume metrics, an animated circ
 ---
 
 ### 2. Interactive AI Revision Intelligence Panel
-Powered by local Spring AI and Ollama, this collapsible panel provides automated asymptotic complexity analysis (`O(N)` Time / `O(1)` Space), common failure traps, pre-interview checklists, and timed active recall quizzes.
+Powered by Spring AI and Gemini, this collapsible panel provides automated asymptotic complexity analysis (`O(N)` Time / `O(1)` Space), common failure traps, pre-interview checklists, and timed active recall quizzes.
 
 <p align="center">
   <img src="docs/screenshots/dashboard-revision.png" alt="AI Revision Intelligence Panel" width="100%" />
@@ -68,8 +68,8 @@ Comprehensive capability breakdown showcasing ingestion velocity, algorithmic ta
 
 ## ⚡ Core Capabilities
 
-### 1. ✦ Local AI Revision Coach (Spring AI + Ollama)
-- Powered by local LLMs (e.g. Qwen / Ollama) via **Spring AI**.
+### 1. ✦ Gemini AI Revision Coach (Spring AI + Gemini)
+- Powered by Google's Gemini Developer API via **Spring AI**. The default `gemini-3.6-flash` model is available within Gemini's free tier, subject to its rate limits.
 - Automatically synthesizes:
   - **Optimal Asymptotic Complexity**: Worst-case Time & Space complexity bounds (`O(N)`).
   - **Core Invariant & Approach**: The fundamental algorithmic intuition formatted in clean Markdown.
@@ -109,7 +109,7 @@ Comprehensive capability breakdown showcasing ingestion velocity, algorithmic ta
 | Layer | Technologies |
 | :--- | :--- |
 | **Backend Core** | Java 21, Spring Boot 4.x, Spring MVC, Spring Data JPA (Hibernate) |
-| **AI Integration** | Spring AI 2.0.0, Ollama (e.g. `qwen3:4b`), Local Embedding & Chat APIs |
+| **AI Integration** | Spring AI 2.0.0, Gemini Developer API (`gemini-3.6-flash`), native structured chat output |
 | **Security & Auth** | Spring Security 6.x, OAuth2 Client (Google & GitHub), BCrypt |
 | **Database** | MySQL 8.x (compatible with any JDBC SQL database) |
 | **Frontend Templates** | Thymeleaf 3.x (Server-Rendered, Zero React/SPA overhead) |
@@ -169,17 +169,14 @@ d:\Java_Backend\Spring Boot\Dev Tracker\
 ### 1. Prerequisites
 - **Java 21** or newer (`java -version`).
 - **MySQL Server** (running locally on port `3306` or via Docker).
-- **Ollama** (optional, for AI Revision Review): [Install Ollama](https://ollama.ai) and pull the model:
-  ```bash
-  ollama pull qwen3:4b
-  ```
+- A free [Google AI Studio](https://aistudio.google.com/) account and a Gemini Developer API key (for AI Revision Review).
 
 ### 2. Environment Configuration
 Copy the `.env.example` file to `.env`:
 ```bash
 cp .env.example .env
 ```
-Update `.env` with your local database credentials and OAuth keys:
+Update `.env` with your local database credentials, OAuth keys, and Gemini API key:
 ```env
 # Database Credentials
 DB_URL=jdbc:mysql://localhost:3306/dev_tracker?createDatabaseIfNotExist=true
@@ -194,16 +191,27 @@ GOOGLE_CLIENT_SECRET=your_google_client_secret
 GITHUB_CLIENT_ID=your_github_client_id
 GITHUB_CLIENT_SECRET=your_github_client_secret
 
-# Ollama Local AI Base URL
-OLLAMA_BASE_URL=http://localhost:11434
+# Gemini Developer API (free tier)
+GEMINI_API_KEY=your_gemini_api_key
 ```
 
 > [!NOTE]
 > `.env` is listed in `.gitignore` to prevent credentials from ever leaking into source control.
 
+### 3. Switch to Gemini's free tier
+The project is already configured for Gemini. Complete these steps before starting the application:
+
+1. Open [Google AI Studio](https://aistudio.google.com/app/apikey), sign in, and choose **Create API key**.
+2. Copy the key into the `GEMINI_API_KEY` value in your local `.env` file. Do not commit this file or paste the key into source code.
+3. Keep `spring.ai.google.genai.chat.model=gemini-3.6-flash` in `application.properties`. This is the configured free-tier model and supports the structured review response used by Dev Tracker.
+4. Start the app, sign in, open **My Problems**, and select **Generate AI Review** on a problem to verify the integration.
+5. If a request is rejected, confirm the key is active in AI Studio and check the current free-tier rate limits. Free tier availability and quotas can change; wait for the quota window to reset or use a paid tier if your usage exceeds the limit.
+
+Ollama and downloaded local models are no longer required.
+
 ---
 
-### 3. Build & Run
+### 4. Build & Run
 
 #### Running with Maven:
 ```powershell

@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Service
 public class ProblemAiReviewService {
 
-    private static final String MODEL_NAME = "qwen3:4b";
+    private static final String MODEL_NAME = "gemini-3.6-flash";
     private static final List<String> APPROVED_TAGS = List.of(
             "Array", "String", "Sorting", "Two Pointers", "Linked List", "Simulation", "Matrix", "Stack",
             "Hash Table", "Math", "Depth-First Search", "Greedy", "Tree", "Binary Tree", "Breadth-First Search",
@@ -51,12 +51,11 @@ public class ProblemAiReviewService {
                     .call()
                     .entity(AiProblemReview.class, spec -> spec.useProviderStructuredOutput());
         } catch (RuntimeException exception) {
-            throw new AiReviewGenerationException("Ollama could not create the review. Ensure Ollama is running and the "
-                    + MODEL_NAME + " model has been downloaded.", exception);
+            throw new AiReviewGenerationException("Gemini could not create the review. Check GEMINI_API_KEY and your Gemini API quota.", exception);
         }
 
         if (generatedReview == null) {
-            throw new AiReviewGenerationException("Ollama returned no review. Please try again.", null);
+            throw new AiReviewGenerationException("Gemini returned no review. Please try again.", null);
         }
 
         List<String> approvedNextTopics = (generatedReview.nextTopics() == null ? List.<String>of() : generatedReview.nextTopics()).stream()
@@ -129,7 +128,7 @@ public class ProblemAiReviewService {
 
     private String requireText(String value, String fieldName) {
         if (value == null || value.isBlank()) {
-            throw new AiReviewGenerationException("Ollama returned an incomplete " + fieldName + ". Please try again.", null);
+            throw new AiReviewGenerationException("Gemini returned an incomplete " + fieldName + ". Please try again.", null);
         }
         return value.trim();
     }
