@@ -8,9 +8,15 @@
   <img src="https://img.shields.io/badge/Java-21-orange.svg" alt="Java 21" />
   <img src="https://img.shields.io/badge/Spring%20Boot-4.1.0-brightgreen.svg" alt="Spring Boot 4.1.0" />
   <img src="https://img.shields.io/badge/Spring%20AI-2.0.0-blue.svg" alt="Spring AI" />
+  <img src="https://img.shields.io/badge/Docker-Ready-2496ED.svg?logo=docker&logoColor=white" alt="Docker Ready" />
+  <img src="https://img.shields.io/badge/Render-Deployed-46E3B7.svg?logo=render&logoColor=white" alt="Render Deployed" />
   <img src="https://img.shields.io/badge/Tailwind_CSS-Forms_%26_Typography-cyan.svg" alt="Tailwind CSS" />
   <img src="https://img.shields.io/badge/Flowbite-2.5.2-purple.svg" alt="Flowbite" />
   <img src="https://img.shields.io/badge/MySQL-Connector-blue.svg" alt="MySQL" />
+</p>
+
+<p align="center">
+  🌐 <b>Live Production App:</b> <a href="https://dev-tracker-1q3t.onrender.com" target="_blank">https://dev-tracker-1q3t.onrender.com</a>
 </p>
 
 **Dev Tracker** is a developer's tactical command center for deliberate data structure & algorithm (DSA) practice and technical interview preparation. 
@@ -111,7 +117,8 @@ Comprehensive capability breakdown showcasing ingestion velocity, algorithmic ta
 | **Backend Core** | Java 21, Spring Boot 4.x, Spring MVC, Spring Data JPA (Hibernate) |
 | **AI Integration** | Spring AI 2.0.0, Gemini Developer API (`gemini-3.6-flash`), native structured chat output |
 | **Security & Auth** | Spring Security 6.x, OAuth2 Client (Google & GitHub), BCrypt |
-| **Database** | MySQL 8.x (compatible with any JDBC SQL database) |
+| **Database** | MySQL 8.x, TiDB Cloud Serverless (Production Cloud MySQL) |
+| **DevOps & Cloud** | Docker (Multi-stage build), Docker Compose, Render Blueprint (`render.yaml`) |
 | **Frontend Templates** | Thymeleaf 3.x (Server-Rendered, Zero React/SPA overhead) |
 | **Styling & UI** | Tailwind CSS (Forms & Typography plugins), Flowbite 2.5.2, Heroicons SVGs |
 | **Client Scripting** | Vanilla JavaScript, GSAP 3.12 (Motion & Micro-interactions) |
@@ -122,7 +129,6 @@ Comprehensive capability breakdown showcasing ingestion velocity, algorithmic ta
 ## 📁 Repository Structure
 
 ```text
-d:\Java_Backend\Spring Boot\Dev Tracker\
 ├── docs/
 │   └── screenshots/              # UI screenshots and visual documentation
 │       ├── dashboard-metrics.png # Dashboard with metric counters
@@ -157,8 +163,12 @@ d:\Java_Backend\Spring Boot\Dev Tracker\
 │   │           └── user/
 │   │               ├── login.html    # Split-screen auth with Google/GitHub buttons
 │   │               └── register.html # Account deployment form
+├── .dockerignore                 # Excludes build artifacts and secrets from Docker builds
 ├── .env.example                  # Environment variables template
+├── docker-compose.yml            # Local multi-container stack (App + MySQL 8)
+├── Dockerfile                    # Multi-stage production build (Java 21 + Maven)
 ├── pom.xml                       # Maven build configuration
+├── render.yaml                   # Render Blueprint (Infrastructure-as-Code)
 └── README.md
 ```
 
@@ -239,6 +249,61 @@ http://localhost:8080
 - **Landing Page**: `http://localhost:8080/devtracker/home`
 - **Dashboard Workspace**: `http://localhost:8080/problems`
 - **Log Problem**: `http://localhost:8080/problems/add`
+
+---
+
+### 5. Run with Docker & Docker Compose (Zero Setup)
+
+You can run the entire stack (Spring Boot app + MySQL 8 container with health checks and persistent volume) using a single command:
+
+```powershell
+# Build and start both app and MySQL
+docker compose up --build
+
+# Stop the containers
+docker compose down
+
+# Stop and wipe database volume
+docker compose down -v
+```
+
+The app will be accessible at `http://localhost:8080` and the database at `localhost:3306`.
+
+---
+
+### 6. Deploy to Render (Production Cloud)
+
+Dev Tracker is pre-configured for **Render** via [render.yaml](render.yaml) and [Dockerfile](Dockerfile).
+
+#### A. Database (TiDB Cloud Serverless / Free MySQL)
+Because Render does not offer managed MySQL on its free tier, use [TiDB Cloud Serverless](https://tidbcloud.com/) (free forever, MySQL-compatible):
+1. Create a free cluster on TiDB Cloud.
+2. In **Security** / **Networking**, allow `0.0.0.0/0`.
+3. Obtain your JDBC connection details.
+
+#### B. Deploying via Render Blueprint
+1. Push your repository to GitHub.
+2. On [Render Dashboard](https://dashboard.render.com/), click **New +** > **Blueprint**.
+3. Select your repository. Render will automatically detect `render.yaml`.
+4. Supply your environment variables:
+   - `DB_URL`: `jdbc:mysql://<tidb-host>:4000/test?sslMode=VERIFY_IDENTITY`
+   - `DB_USERNAME`: `<cluster-prefix>.root`
+   - `DB_PASSWORD`: `<your-tidb-password>`
+   - `GEMINI_API_KEY`: `<your-gemini-key>`
+   - `GOOGLE_CLIENT_ID` & `GOOGLE_CLIENT_SECRET`
+   - `GITHUB_CLIENT_ID` & `GITHUB_CLIENT_SECRET`
+5. Click **Apply**. Render will automatically build the multi-stage Docker image and launch the service.
+
+#### C. OAuth Callback Configuration
+Once your service URL is live (e.g. `https://<your-app>.onrender.com`), add the redirect URIs:
+- **Google Cloud Console**:
+  ```text
+  https://<your-app>.onrender.com/login/oauth2/code/google
+  ```
+- **GitHub Developer Settings**:
+  ```text
+  https://<your-app>.onrender.com/login/oauth2/code/github
+  ```
 
 ---
 
