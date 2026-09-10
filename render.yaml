@@ -1,0 +1,36 @@
+# Render Blueprint Specification (Infrastructure-as-Code)
+# Documentation: https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: dev-tracker
+    runtime: docker
+    plan: free
+    region: oregon
+    healthCheckPath: /login
+    envVars:
+      # Database connection (Use external cloud MySQL like TiDB Cloud, Aiven, or Clever Cloud)
+      - key: DB_URL
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+
+      # Google Gemini API Key
+      - key: GEMINI_API_KEY
+        sync: false
+
+      # OAuth 2.0 Client Credentials
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GITHUB_CLIENT_ID
+        sync: false
+      - key: GITHUB_CLIENT_SECRET
+        sync: false
+
+      # Ensure HTTPS reverse proxy headers are honored
+      - key: SERVER_FORWARD_HEADERS_STRATEGY
+        value: framework

@@ -41,7 +41,8 @@ client_secret_*.json
 output/
 
 # Local Spring Boot configuration overrides
-src/main/resources/application.properties
+# (base application.properties is tracked; overrides are ignored)
 src/main/resources/application-*.properties
 src/main/resources/*local*.properties
 
+/PassAWS.txt

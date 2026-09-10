@@ -1,0 +1,32 @@
+# Build output
+target/
+build/
+output/
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# IDE and Editor files
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+
+# Secrets and local credentials
+.env
+.env.local
+.env.*.local
+PassAWS.txt
+secret.txt
+client_secret_*.json
+
+# Documentation and auxiliary files
+HELP.md
+README.md
+docs/
