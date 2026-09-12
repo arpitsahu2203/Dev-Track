@@ -23,7 +23,11 @@ public class ProblemAiReviewService {
             "Array", "String", "Sorting", "Two Pointers", "Linked List", "Simulation", "Matrix", "Stack",
             "Hash Table", "Math", "Depth-First Search", "Greedy", "Tree", "Binary Tree", "Breadth-First Search",
             "Bit Manipulation", "Dynamic Programming", "Divide and Conquer", "Backtracking", "Topological Sort",
-            "Data Stream", "Union Find", "Rolling Hash", "Quickselect"
+            "Data Stream", "Union Find", "Rolling Hash", "Quickselect", "Graph", "Directed Graph",
+            "Undirected Graph", "Weighted Graph", "Graph Traversal", "Shortest Path", "Dijkstra's Algorithm",
+            "Bellman-Ford", "Floyd-Warshall", "Minimum Spanning Tree", "Kruskal's Algorithm", "Prim's Algorithm",
+            "Strongly Connected Components", "Bridges and Articulation Points", "Eulerian Path", "Hamiltonian Path",
+            "Network Flow"
     );
 
     private final ChatClient chatClient;

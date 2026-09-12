@@ -27,11 +27,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/problems")
@@ -90,10 +93,13 @@ public class ProblemController {
             model.addAttribute("easyCount", 0);
             model.addAttribute("mediumCount", 0);
             model.addAttribute("hardCount", 0);
+            model.addAttribute("topicStats", Map.of());
+            model.addAttribute("maxTopicCount", 0);
             return "problems/list";
         }
 
         User user = loggedInUser.get();
+        List<Problem> allProblems = problemService.getProblemsByUser(user);
 
         List<Problem> problems = problemService.getFilteredProblems(
                 user,
@@ -121,6 +127,9 @@ public class ProblemController {
         model.addAttribute("easyCount", problemService.countProblemsByUserAndDifficulty(user, "easy"));
         model.addAttribute("mediumCount", problemService.countProblemsByUserAndDifficulty(user, "medium"));
         model.addAttribute("hardCount", problemService.countProblemsByUserAndDifficulty(user, "hard"));
+        Map<String, Long> topicStats = getSolvedTopicStats(allProblems);
+        model.addAttribute("topicStats", topicStats);
+        model.addAttribute("maxTopicCount", topicStats.values().stream().mapToLong(Long::longValue).max().orElse(0));
         return "problems/list";
     }
 
@@ -252,18 +261,44 @@ public class ProblemController {
         model.addAttribute("tagGroups", TAG_GROUPS);
     }
 
+    private Map<String, Long> getSolvedTopicStats(List<Problem> problems) {
+        return problems.stream()
+                .filter(problem -> problem.getDateSolved() != null)
+                .map(Problem::getTopic)
+                .filter(topic -> topic != null && !topic.isBlank())
+                .flatMap(topic -> Arrays.stream(topic.split("\\s*,\\s*")))
+                .map(String::trim)
+                .filter(topic -> !topic.isBlank())
+                .collect(Collectors.groupingBy(topic -> topic, Collectors.counting()))
+                .entrySet().stream()
+                .sorted(Map.Entry.<String, Long>comparingByValue(Comparator.reverseOrder())
+                        .thenComparing(Map.Entry.comparingByKey(String.CASE_INSENSITIVE_ORDER)))
+                .limit(8)
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (left, right) -> left,
+                        LinkedHashMap::new
+                ));
+    }
+
     private static Map<String, List<String>> createTagGroups() {
         Map<String, List<String>> tagGroups = new LinkedHashMap<>();
         tagGroups.put("Fundamental", List.of(
                 "Array", "String", "Sorting", "Two Pointers", "Linked List", "Simulation", "Matrix", "Stack"
         ));
         tagGroups.put("Intermediate", List.of(
-                "Hash Table", "Math", "Depth-First Search", "Greedy", "Tree", "Binary Tree",
-                "Breadth-First Search", "Bit Manipulation"
+                "Hash Table", "Math", "Greedy", "Tree", "Binary Tree", "Bit Manipulation"
+        ));
+        tagGroups.put("Graph", List.of(
+                "Graph", "Directed Graph", "Undirected Graph", "Weighted Graph", "Graph Traversal",
+                "Breadth-First Search", "Depth-First Search", "Topological Sort", "Shortest Path",
+                "Dijkstra's Algorithm", "Bellman-Ford", "Floyd-Warshall", "Minimum Spanning Tree",
+                "Kruskal's Algorithm", "Prim's Algorithm", "Union Find", "Strongly Connected Components",
+                "Bridges and Articulation Points", "Eulerian Path", "Hamiltonian Path", "Network Flow"
         ));
         tagGroups.put("Advanced", List.of(
-                "Dynamic Programming", "Divide and Conquer", "Backtracking", "Topological Sort", "Data Stream",
-                "Union Find", "Rolling Hash", "Quickselect"
+                "Dynamic Programming", "Divide and Conquer", "Backtracking", "Data Stream", "Rolling Hash", "Quickselect"
         ));
         return Collections.unmodifiableMap(tagGroups);
     }
