@@ -148,6 +148,26 @@ public class ProblemController {
         return "redirect:/problems";
     }
 
+    @PostMapping("/{id}/delete")
+    public String deleteProblem(
+            @PathVariable java.util.UUID id,
+            Authentication authentication,
+            RedirectAttributes redirectAttributes
+    ) {
+        Optional<User> loggedInUser = resolveLoggedInUser(authentication);
+        Optional<Problem> problem = problemService.getProblemById(id);
+
+        if (loggedInUser.isEmpty() || problem.isEmpty()
+                || !problem.get().getUser().getEmail().equalsIgnoreCase(loggedInUser.get().getEmail())) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Problem not found.");
+            return "redirect:/problems";
+        }
+
+        problemService.deleteProblem(id);
+        redirectAttributes.addFlashAttribute("successMessage", "Problem deleted successfully.");
+        return "redirect:/problems";
+    }
+
     @PostMapping("/add")
     public String saveProblem(
             @Valid @ModelAttribute("problemForm") ProblemForm problemForm,

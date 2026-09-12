@@ -17,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
 
 import java.time.LocalDate;
+import java.util.UUID;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ProblemControllerTest {
@@ -85,6 +87,45 @@ class ProblemControllerTest {
         assertTrue(model.containsAttribute("errorMessage"));
     }
 
+    @Test
+    void deleteProblemDeletesOnlyTheSignedInUsersProblem() {
+        User storedUser = user("dev@example.com");
+        Problem problem = Problem.builder().id(UUID.randomUUID()).user(storedUser).build();
+        CapturingProblemService problemService = new CapturingProblemService();
+        problemService.problemToReturn = problem;
+        ProblemController controller = new ProblemController(problemService, new StubUserService(storedUser));
+
+        String viewName = controller.deleteProblem(problem.getId(), oauthAuthentication("dev@example.com"), new RedirectAttributesModelMap());
+
+        assertEquals("redirect:/problems", viewName);
+        assertEquals(problem.getId(), problemService.deletedProblemId);
+    }
+
+    @Test
+    void deleteProblemDoesNotDeleteAnotherUsersProblem() {
+        User storedUser = user("dev@example.com");
+        Problem problem = Problem.builder().id(UUID.randomUUID()).user(user("other@example.com")).build();
+        CapturingProblemService problemService = new CapturingProblemService();
+        problemService.problemToReturn = problem;
+        ProblemController controller = new ProblemController(problemService, new StubUserService(storedUser));
+
+        String viewName = controller.deleteProblem(problem.getId(), oauthAuthentication("dev@example.com"), new RedirectAttributesModelMap());
+
+        assertEquals("redirect:/problems", viewName);
+        assertNull(problemService.deletedProblemId);
+    }
+
+    private static User user(String email) {
+        return User.builder()
+                .email(email)
+                .name("Dev")
+                .phoneNumber("1234567890")
+                .password("secret")
+                .enabled(true)
+                .emailVerified(true)
+                .build();
+    }
+
     private static Authentication oauthAuthentication(String email) {
         OAuth2User principal = new OAuth2User() {
             @Override
@@ -108,6 +149,8 @@ class ProblemControllerTest {
 
     private static final class CapturingProblemService implements ProblemService {
         private Problem savedProblem;
+        private Problem problemToReturn;
+        private UUID deletedProblemId;
 
         @Override
         public Problem saveProblem(Problem problem) {
@@ -117,7 +160,7 @@ class ProblemControllerTest {
 
         @Override
         public Optional<Problem> getProblemById(java.util.UUID id) {
-            throw new UnsupportedOperationException();
+            return Optional.ofNullable(problemToReturn);
         }
 
         @Override
@@ -152,7 +195,7 @@ class ProblemControllerTest {
 
         @Override
         public void deleteProblem(java.util.UUID id) {
-            throw new UnsupportedOperationException();
+            this.deletedProblemId = id;
         }
     }
 
