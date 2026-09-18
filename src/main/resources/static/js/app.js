@@ -72,8 +72,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ------------------------------------------------------------------------
-    // 4. Global Keyboard Shortcuts (⌘K / Ctrl+K / '/' to Focus Search)
+    // 4. Global Keyboard Shortcuts (Ctrl+K for Windows/Linux & ⌘K for Mac)
     // ------------------------------------------------------------------------
+    const isMac = /(Mac|iPhone|iPod|iPad)/i.test(navigator.userAgent || navigator.platform || '');
+    document.querySelectorAll('.search-shortcut').forEach((el) => {
+        el.textContent = isMac ? '⌘K' : 'Ctrl+K';
+    });
+
     document.addEventListener('keydown', (e) => {
         if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
             if (searchInput) {
