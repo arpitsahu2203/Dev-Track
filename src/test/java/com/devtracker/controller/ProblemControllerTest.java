@@ -60,7 +60,8 @@ class ProblemControllerTest {
         ModelAndRedirectAttributes modelAndRedirectAttributes = new ModelAndRedirectAttributes();
         Authentication authentication = oauthAuthentication("dev@example.com");
 
-        String viewName = controller.saveProblem(form, bindingResult, authentication, modelAndRedirectAttributes.model, modelAndRedirectAttributes.redirectAttributes);
+        String viewName = controller.saveProblem(form, bindingResult, authentication, modelAndRedirectAttributes.model,
+                modelAndRedirectAttributes.redirectAttributes);
 
         assertEquals("redirect:/problems", viewName);
         assertEquals("Two Sum", problemService.savedProblem.getProblemName());
@@ -81,7 +82,8 @@ class ProblemControllerTest {
         BindingResult bindingResult = new BeanPropertyBindingResult(form, "problemForm");
         ConcurrentModel model = new ConcurrentModel();
 
-        String viewName = controller.saveProblem(form, bindingResult, oauthAuthentication("missing@example.com"), model, new RedirectAttributesModelMap());
+        String viewName = controller.saveProblem(form, bindingResult, oauthAuthentication("missing@example.com"), model,
+                new RedirectAttributesModelMap());
 
         assertEquals("problems/add", viewName);
         assertTrue(model.containsAttribute("errorMessage"));
@@ -95,7 +97,8 @@ class ProblemControllerTest {
         problemService.problemToReturn = problem;
         ProblemController controller = new ProblemController(problemService, new StubUserService(storedUser));
 
-        String viewName = controller.deleteProblem(problem.getId(), oauthAuthentication("dev@example.com"), new RedirectAttributesModelMap());
+        String viewName = controller.deleteProblem(problem.getId(), oauthAuthentication("dev@example.com"),
+                new RedirectAttributesModelMap());
 
         assertEquals("redirect:/problems", viewName);
         assertEquals(problem.getId(), problemService.deletedProblemId);
@@ -109,7 +112,8 @@ class ProblemControllerTest {
         problemService.problemToReturn = problem;
         ProblemController controller = new ProblemController(problemService, new StubUserService(storedUser));
 
-        String viewName = controller.deleteProblem(problem.getId(), oauthAuthentication("dev@example.com"), new RedirectAttributesModelMap());
+        String viewName = controller.deleteProblem(problem.getId(), oauthAuthentication("dev@example.com"),
+                new RedirectAttributesModelMap());
 
         assertEquals("redirect:/problems", viewName);
         assertNull(problemService.deletedProblemId);
@@ -174,7 +178,8 @@ class ProblemControllerTest {
         }
 
         @Override
-        public List<Problem> getFilteredProblems(User user, String difficulty, String platform, String topic, LocalDate dateAdded, Boolean revisit, Integer attemptsGreaterThan) {
+        public List<Problem> getFilteredProblems(User user, String difficulty, String platform, String topic,
+                LocalDate dateAdded, Boolean revisit, Integer attemptsGreaterThan) {
             throw new UnsupportedOperationException();
         }
 

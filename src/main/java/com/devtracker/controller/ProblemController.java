@@ -42,8 +42,7 @@ public class ProblemController {
 
     private static final List<String> PLATFORMS = List.of(
             "LeetCode", "GeeksforGeeks", "Codeforces", "CodeChef", "HackerRank",
-            "HackerEarth", "AtCoder", "CSES", "InterviewBit", "Coding Ninjas", "Other"
-    );
+            "HackerEarth", "AtCoder", "CSES", "InterviewBit", "Coding Ninjas", "Other");
 
     private static final Map<String, List<String>> TAG_GROUPS = createTagGroups();
 
@@ -52,7 +51,8 @@ public class ProblemController {
     private final ProblemAiReviewService aiReviewService;
 
     @Autowired
-    public ProblemController(ProblemService problemService, UserService userService, ProblemAiReviewService aiReviewService) {
+    public ProblemController(ProblemService problemService, UserService userService,
+            ProblemAiReviewService aiReviewService) {
         this.problemService = problemService;
         this.userService = userService;
         this.aiReviewService = aiReviewService;
@@ -79,8 +79,7 @@ public class ProblemController {
             @RequestParam(required = false) Boolean revisit,
             @RequestParam(required = false) Integer attemptsGreaterThan,
             Authentication authentication,
-            Model model
-    ) {
+            Model model) {
         Optional<User> loggedInUser = resolveLoggedInUser(authentication);
         if (loggedInUser.isEmpty()) {
             model.addAttribute("pageTitle", "My Problems");
@@ -108,8 +107,7 @@ public class ProblemController {
                 topic,
                 dateAdded,
                 revisit,
-                attemptsGreaterThan
-        );
+                attemptsGreaterThan);
 
         model.addAttribute("pageTitle", "My Problems");
         model.addAttribute("problems", problems);
@@ -137,8 +135,7 @@ public class ProblemController {
     public String generateAiReview(
             @PathVariable java.util.UUID id,
             Authentication authentication,
-            RedirectAttributes redirectAttributes
-    ) {
+            RedirectAttributes redirectAttributes) {
         Optional<User> loggedInUser = resolveLoggedInUser(authentication);
         Optional<Problem> problem = problemService.getProblemById(id);
 
@@ -150,7 +147,8 @@ public class ProblemController {
 
         try {
             aiReviewService.generateReview(problem.get());
-            redirectAttributes.addFlashAttribute("successMessage", "AI review generated. Use it to guide your next revision.");
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "AI review generated. Use it to guide your next revision.");
         } catch (ProblemAiReviewService.AiReviewGenerationException exception) {
             redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
         }
@@ -161,8 +159,7 @@ public class ProblemController {
     public String deleteProblem(
             @PathVariable java.util.UUID id,
             Authentication authentication,
-            RedirectAttributes redirectAttributes
-    ) {
+            RedirectAttributes redirectAttributes) {
         Optional<User> loggedInUser = resolveLoggedInUser(authentication);
         Optional<Problem> problem = problemService.getProblemById(id);
 
@@ -183,8 +180,7 @@ public class ProblemController {
             BindingResult bindingResult,
             Authentication authentication,
             Model model,
-            RedirectAttributes redirectAttributes
-    ) {
+            RedirectAttributes redirectAttributes) {
         model.addAttribute("pageTitle", "Add Problem");
         populateFormOptions(model);
 
@@ -278,28 +274,24 @@ public class ProblemController {
                         Map.Entry::getKey,
                         Map.Entry::getValue,
                         (left, right) -> left,
-                        LinkedHashMap::new
-                ));
+                        LinkedHashMap::new));
     }
 
     private static Map<String, List<String>> createTagGroups() {
         Map<String, List<String>> tagGroups = new LinkedHashMap<>();
         tagGroups.put("Fundamental", List.of(
-                "Array", "String", "Sorting", "Two Pointers", "Linked List", "Simulation", "Matrix", "Stack"
-        ));
+                "Array", "String", "Sorting", "Two Pointers", "Linked List", "Simulation", "Matrix", "Stack"));
         tagGroups.put("Intermediate", List.of(
-                "Hash Table", "Math", "Greedy", "Tree", "Binary Tree", "Bit Manipulation"
-        ));
+                "Hash Table", "Math", "Greedy", "Tree", "Binary Tree", "Bit Manipulation"));
         tagGroups.put("Graph", List.of(
                 "Graph", "Directed Graph", "Undirected Graph", "Weighted Graph", "Graph Traversal",
                 "Breadth-First Search", "Depth-First Search", "Topological Sort", "Shortest Path",
                 "Dijkstra's Algorithm", "Bellman-Ford", "Floyd-Warshall", "Minimum Spanning Tree",
                 "Kruskal's Algorithm", "Prim's Algorithm", "Union Find", "Strongly Connected Components",
-                "Bridges and Articulation Points", "Eulerian Path", "Hamiltonian Path", "Network Flow"
-        ));
+                "Bridges and Articulation Points", "Eulerian Path", "Hamiltonian Path", "Network Flow"));
         tagGroups.put("Advanced", List.of(
-                "Dynamic Programming", "Divide and Conquer", "Backtracking", "Data Stream", "Rolling Hash", "Quickselect"
-        ));
+                "Dynamic Programming", "Divide and Conquer", "Backtracking", "Data Stream", "Rolling Hash",
+                "Quickselect"));
         return Collections.unmodifiableMap(tagGroups);
     }
 

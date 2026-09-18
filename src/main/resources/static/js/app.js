@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const parts = url.split('/problems/')[1].split('/')[0].split('-');
                     const formatted = parts.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
                     if (formatted) problemNameInput.value = formatted;
-                } catch (err) {}
+                } catch (err) { }
             }
         });
     }
