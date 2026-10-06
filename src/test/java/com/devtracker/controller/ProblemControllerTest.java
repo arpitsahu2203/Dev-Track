@@ -9,8 +9,7 @@ import com.devtracker.services.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.ui.ConcurrentModel;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
@@ -31,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class ProblemControllerTest {
 
     @Test
-    void saveProblemUsesOauth2EmailAttributeWhenResolvingUser() {
+    void saveProblemResolvesUserFromAuthentication() {
         User storedUser = User.builder()
                 .email("dev@example.com")
                 .name("Dev")
@@ -58,7 +57,7 @@ class ProblemControllerTest {
 
         BindingResult bindingResult = new BeanPropertyBindingResult(form, "problemForm");
         ModelAndRedirectAttributes modelAndRedirectAttributes = new ModelAndRedirectAttributes();
-        Authentication authentication = oauthAuthentication("dev@example.com");
+        Authentication authentication = authenticatedUser("dev@example.com");
 
         String viewName = controller.saveProblem(form, bindingResult, authentication, modelAndRedirectAttributes.model,
                 modelAndRedirectAttributes.redirectAttributes);
@@ -82,7 +81,7 @@ class ProblemControllerTest {
         BindingResult bindingResult = new BeanPropertyBindingResult(form, "problemForm");
         ConcurrentModel model = new ConcurrentModel();
 
-        String viewName = controller.saveProblem(form, bindingResult, oauthAuthentication("missing@example.com"), model,
+        String viewName = controller.saveProblem(form, bindingResult, authenticatedUser("missing@example.com"), model,
                 new RedirectAttributesModelMap());
 
         assertEquals("problems/add", viewName);
@@ -97,7 +96,7 @@ class ProblemControllerTest {
         problemService.problemToReturn = problem;
         ProblemController controller = new ProblemController(problemService, new StubUserService(storedUser));
 
-        String viewName = controller.deleteProblem(problem.getId(), oauthAuthentication("dev@example.com"),
+        String viewName = controller.deleteProblem(problem.getId(), authenticatedUser("dev@example.com"),
                 new RedirectAttributesModelMap());
 
         assertEquals("redirect:/problems", viewName);
@@ -112,7 +111,7 @@ class ProblemControllerTest {
         problemService.problemToReturn = problem;
         ProblemController controller = new ProblemController(problemService, new StubUserService(storedUser));
 
-        String viewName = controller.deleteProblem(problem.getId(), oauthAuthentication("dev@example.com"),
+        String viewName = controller.deleteProblem(problem.getId(), authenticatedUser("dev@example.com"),
                 new RedirectAttributesModelMap());
 
         assertEquals("redirect:/problems", viewName);
@@ -130,25 +129,11 @@ class ProblemControllerTest {
                 .build();
     }
 
-    private static Authentication oauthAuthentication(String email) {
-        OAuth2User principal = new OAuth2User() {
-            @Override
-            public Map<String, Object> getAttributes() {
-                return Map.of("email", email, "login", email);
-            }
-
-            @Override
-            public Collection<? extends GrantedAuthority> getAuthorities() {
-                return List.of();
-            }
-
-            @Override
-            public String getName() {
-                return email;
-            }
-        };
-
-        return new UsernamePasswordAuthenticationToken(principal, "n/a", principal.getAuthorities());
+    private static Authentication authenticatedUser(String email) {
+        org.springframework.security.core.userdetails.User principal =
+                new org.springframework.security.core.userdetails.User(
+                        email, "secret", List.of(new SimpleGrantedAuthority("ROLE_USER")));
+        return new UsernamePasswordAuthenticationToken(principal, "secret", principal.getAuthorities());
     }
 
     private static final class CapturingProblemService implements ProblemService {

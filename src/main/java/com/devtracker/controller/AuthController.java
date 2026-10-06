@@ -60,7 +60,7 @@ public class AuthController {
                 .password(passwordEncoder.encode(userForm.getPassword()))
                 .emailVerified(false)
                 .enabled(true)
-                .provider(com.devtracker.entities.Providers.SELF)
+                .provider(com.devtracker.entities.Providers.LOCAL)
                 .roleList(new java.util.ArrayList<>(java.util.List.of("ROLE_USER")))
                 .build();
 

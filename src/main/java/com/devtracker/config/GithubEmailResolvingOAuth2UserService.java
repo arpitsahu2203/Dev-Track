@@ -18,6 +18,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * Custom OAuth2UserService that handles GitHub's private email scenario by
+ * querying the /user/emails endpoint using the OAuth2 access token.
+ */
 public class GithubEmailResolvingOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private static final String GITHUB_REGISTRATION_ID = "github";
@@ -30,7 +34,7 @@ public class GithubEmailResolvingOAuth2UserService implements OAuth2UserService<
         this(new DefaultOAuth2UserService(), RestClient.create());
     }
 
-    GithubEmailResolvingOAuth2UserService(
+    public GithubEmailResolvingOAuth2UserService(
             OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate,
             RestClient restClient
     ) {
@@ -47,29 +51,24 @@ public class GithubEmailResolvingOAuth2UserService implements OAuth2UserService<
             return oauth2User;
         }
 
-        String accessToken = userRequest.getAccessToken().getTokenValue();
-        String githubEmail = fetchGithubEmail(accessToken);
-
         Map<String, Object> attributes = new LinkedHashMap<>(oauth2User.getAttributes());
-        if (StringUtils.hasText(githubEmail)) {
-            attributes.put("email", githubEmail);
+        Object emailObj = oauth2User.getAttribute("email");
+        String resolvedEmail = emailObj instanceof String str && StringUtils.hasText(str) ? str.trim() : null;
+
+        if (!StringUtils.hasText(resolvedEmail)) {
+            String accessToken = userRequest.getAccessToken().getTokenValue();
+            resolvedEmail = fetchGithubEmail(accessToken);
+        }
+
+        if (StringUtils.hasText(resolvedEmail)) {
+            attributes.put("email", resolvedEmail);
             attributes.put("email_verified", true);
         } else {
-            // Check if base oauthUser already had an email attribute
-            Object baseEmail = oauth2User.getAttribute("email");
-            if (baseEmail instanceof String baseEmailStr && StringUtils.hasText(baseEmailStr)) {
-                attributes.put("email", baseEmailStr);
+            // Reliable fallback to GitHub no-reply email if user has strictly private email and no emails returned
+            Object login = oauth2User.getAttribute("login");
+            if (login != null && StringUtils.hasText(login.toString())) {
+                attributes.put("email", login.toString() + "@users.noreply.github.com");
                 attributes.put("email_verified", true);
-            } else {
-                // Synthesize safe fallback from login username for users with private GitHub emails
-                Object login = oauth2User.getAttribute("login");
-                if (login != null && StringUtils.hasText(login.toString())) {
-                    attributes.put("email", login.toString() + "@users.noreply.github.com");
-                    attributes.put("email_verified", true);
-                } else {
-                    attributes.remove("email");
-                    attributes.put("email_verified", false);
-                }
             }
         }
 
@@ -122,6 +121,6 @@ public class GithubEmailResolvingOAuth2UserService implements OAuth2UserService<
                 .orElse(null);
     }
 
-    private record GithubEmailRecord(String email, Boolean primary, Boolean verified) {
+    public record GithubEmailRecord(String email, Boolean primary, Boolean verified) {
     }
 }

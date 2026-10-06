@@ -21,8 +21,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Robust OAuth2 Authentication Success Handler supporting multi-provider login
- * (Google, GitHub) and transparent account merging based on verified email.
+ * Robust OAuth2 Authentication Success Handler supporting Google and GitHub logins,
+ * unified account linking by verified email, and profile avatar/name synchronization.
  */
 public class OAuthAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
@@ -56,23 +56,23 @@ public class OAuthAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
 
         String rawEmail = null;
         String name = null;
-        String picture = null;
-        String providerId = null;
-        Providers provider = Providers.SELF;
+        String profilePic = null;
+        String providerUserId = null;
+        Providers provider = Providers.LOCAL;
 
         // 2. Provider-Specific Attribute Extraction
         if ("google".equalsIgnoreCase(registrationId)) {
             provider = Providers.GOOGLE;
             rawEmail = extractString(oauth2User, "email");
             name = extractString(oauth2User, "name");
-            picture = extractString(oauth2User, "picture");
+            profilePic = extractString(oauth2User, "picture");
             Object sub = oauth2User.getAttribute("sub");
-            providerId = sub != null ? sub.toString() : oauth2User.getName();
+            providerUserId = sub != null ? sub.toString() : oauth2User.getName();
         } else if ("github".equalsIgnoreCase(registrationId)) {
             provider = Providers.GITHUB;
             rawEmail = extractString(oauth2User, "email");
 
-            // Handle GitHub's private email nuance
+            // Reliable fallback if email was not populated by userInfo
             if (!StringUtils.hasText(rawEmail)) {
                 String login = extractString(oauth2User, "login");
                 if (StringUtils.hasText(login)) {
@@ -85,19 +85,19 @@ public class OAuthAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
                 name = extractString(oauth2User, "login");
             }
 
-            picture = extractString(oauth2User, "avatar_url");
+            profilePic = extractString(oauth2User, "avatar_url");
             Object id = oauth2User.getAttribute("id");
-            providerId = id != null ? id.toString() : oauth2User.getName();
+            providerUserId = id != null ? id.toString() : oauth2User.getName();
         } else {
             // Generic / Fallback provider resolution
             rawEmail = extractString(oauth2User, "email");
             name = extractString(oauth2User, "name");
-            picture = extractString(oauth2User, "picture");
-            if (!StringUtils.hasText(picture)) {
-                picture = extractString(oauth2User, "avatar_url");
+            profilePic = extractString(oauth2User, "picture");
+            if (!StringUtils.hasText(profilePic)) {
+                profilePic = extractString(oauth2User, "avatar_url");
             }
-            providerId = oauth2User.getName();
-            provider = Providers.SELF;
+            providerUserId = oauth2User.getName();
+            provider = Providers.LOCAL;
         }
 
         String normalizedEmail = EmailNormalizer.normalize(rawEmail);
@@ -106,22 +106,23 @@ public class OAuthAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
             return;
         }
 
-        // 3. Account Merging / Unification Query
+        // 3. Unified Account Linking: check if an account with this email already exists
         Optional<User> existingUserOpt = userRepository.findByEmail(normalizedEmail);
         if (existingUserOpt.isEmpty()) {
             existingUserOpt = userRepository.findByEmailIgnoreCase(normalizedEmail);
         }
 
         if (existingUserOpt.isPresent()) {
-            // User ALREADY exists (e.g. registered via Form Login or another OAuth provider)
-            // DO NOT create duplicate record or throw duplicate key error - merge profile
+            // User ALREADY exists (e.g. created via Form Login, Google, or GitHub)
+            // DO NOT create duplicate account; link to single existing account
             User existingUser = existingUserOpt.get();
 
-            // Update mutable profile data if newly available
-            if (StringUtils.hasText(picture)) {
-                existingUser.setProfilePic(picture);
+            // Sync latest profile picture from provider
+            if (StringUtils.hasText(profilePic)) {
+                existingUser.setProfilePic(profilePic);
             }
 
+            // Sync name if existing name is blank or default
             if (StringUtils.hasText(name)) {
                 String currentName = existingUser.getName();
                 if (!StringUtils.hasText(currentName) || currentName.equalsIgnoreCase(existingUser.getEmail())) {
@@ -131,10 +132,9 @@ public class OAuthAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
 
             // Update provider & provider ID to reflect latest verified login
             existingUser.setProvider(provider);
-            if (StringUtils.hasText(providerId)) {
-                existingUser.setProviderId(providerId);
+            if (StringUtils.hasText(providerUserId)) {
+                existingUser.setProviderUserId(providerUserId);
             }
-
             existingUser.setEmailVerified(true);
 
             if (existingUser.getRoleList() == null || existingUser.getRoleList().isEmpty()) {
@@ -143,7 +143,7 @@ public class OAuthAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
 
             userRepository.save(existingUser);
         } else {
-            // User does NOT exist - provision fresh unified account
+            // User does not exist: provision new User account
             String displayName = StringUtils.hasText(name)
                     ? name
                     : normalizedEmail.substring(0, normalizedEmail.indexOf('@'));
@@ -156,15 +156,15 @@ public class OAuthAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
                     .emailVerified(true)
                     .enabled(true)
                     .provider(provider)
-                    .providerId(providerId)
-                    .profilePic(picture)
+                    .providerUserId(providerUserId)
+                    .profilePic(profilePic)
                     .roleList(new ArrayList<>(List.of("ROLE_USER")))
                     .build();
 
             userRepository.save(newUser);
         }
 
-        // 4. Post-Login Redirection
+        // 4. Redirect to dashboard/home page
         super.onAuthenticationSuccess(request, response, authentication);
     }
 

@@ -50,9 +50,9 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
-    private Providers provider = Providers.SELF;
+    private Providers provider = Providers.LOCAL;
 
-    private String providerId;
+    private String providerUserId;
 
     private String profilePic;
 
@@ -74,8 +74,32 @@ public class User {
             this.roleList = new ArrayList<>(List.of("ROLE_USER"));
         }
         if (this.provider == null) {
-            this.provider = Providers.SELF;
+            this.provider = Providers.LOCAL;
         }
+    }
+
+    public String getId() {
+        return this.email;
+    }
+
+    public void setId(String id) {
+        this.email = id;
+    }
+
+    public String getProviderId() {
+        return this.providerUserId;
+    }
+
+    public void setProviderId(String providerId) {
+        this.providerUserId = providerId;
+    }
+
+    public List<String> getRoles() {
+        return getRoleList();
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roleList = roles != null ? new ArrayList<>(roles) : new ArrayList<>(List.of("ROLE_USER"));
     }
 
     public List<String> getRoleList() {
