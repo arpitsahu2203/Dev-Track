@@ -44,6 +44,18 @@ public class UserServiceImplementation implements UserService {
         existingUser.setEmailVerified(user.isEmailVerified());
         existingUser.setPassword(user.getPassword());
         existingUser.setEnabled(user.isEnabled());
+        if (user.getProvider() != null) {
+            existingUser.setProvider(user.getProvider());
+        }
+        if (user.getProviderId() != null) {
+            existingUser.setProviderId(user.getProviderId());
+        }
+        if (user.getProfilePic() != null) {
+            existingUser.setProfilePic(user.getProfilePic());
+        }
+        if (user.getRoleList() != null && !user.getRoleList().isEmpty()) {
+            existingUser.setRoleList(user.getRoleList());
+        }
 
         return userRepository.save(existingUser);
     }

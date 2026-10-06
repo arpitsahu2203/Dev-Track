@@ -55,9 +55,22 @@ public class GithubEmailResolvingOAuth2UserService implements OAuth2UserService<
             attributes.put("email", githubEmail);
             attributes.put("email_verified", true);
         } else {
-            // Never auto-provision from a GitHub username or an unverified email.
-            attributes.remove("email");
-            attributes.put("email_verified", false);
+            // Check if base oauthUser already had an email attribute
+            Object baseEmail = oauth2User.getAttribute("email");
+            if (baseEmail instanceof String baseEmailStr && StringUtils.hasText(baseEmailStr)) {
+                attributes.put("email", baseEmailStr);
+                attributes.put("email_verified", true);
+            } else {
+                // Synthesize safe fallback from login username for users with private GitHub emails
+                Object login = oauth2User.getAttribute("login");
+                if (login != null && StringUtils.hasText(login.toString())) {
+                    attributes.put("email", login.toString() + "@users.noreply.github.com");
+                    attributes.put("email_verified", true);
+                } else {
+                    attributes.remove("email");
+                    attributes.put("email_verified", false);
+                }
+            }
         }
 
         String userNameAttributeName = userRequest.getClientRegistration()

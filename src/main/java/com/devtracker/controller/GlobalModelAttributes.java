@@ -1,5 +1,6 @@
 package com.devtracker.controller;
 
+import com.devtracker.support.Helper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -29,5 +30,10 @@ public class GlobalModelAttributes {
         return authentication != null
                 && authentication.isAuthenticated()
                 && !(authentication instanceof AnonymousAuthenticationToken);
+    }
+
+    @ModelAttribute("currentUserEmail")
+    public String currentUserEmail(Authentication authentication) {
+        return Helper.getEmailOfLoggedInUser(authentication);
     }
 }

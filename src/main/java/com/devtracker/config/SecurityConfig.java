@@ -1,20 +1,19 @@
 package com.devtracker.config;
 
 import com.devtracker.repositories.UserRepository;
-import com.devtracker.services.UserService;
 import com.devtracker.support.EmailNormalizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -26,9 +25,11 @@ public class SecurityConfig {
         return email -> userRepository.findByEmailIgnoreCase(EmailNormalizer.normalize(email))
                 .map(user -> org.springframework.security.core.userdetails.User
                         .withUsername(user.getEmail())
-                        .password(user.getPassword())
+                        .password(user.getPassword() != null ? user.getPassword() : "")
                         .disabled(!user.isEnabled())
-                        .roles("USER")
+                        .authorities(user.getRoleList() != null && !user.getRoleList().isEmpty()
+                                ? user.getRoleList().toArray(String[]::new)
+                                : new String[]{"ROLE_USER"})
                         .build())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
     }
@@ -44,11 +45,11 @@ public class SecurityConfig {
     }
 
     @Bean
-    public OAuthAccountProvisioningSuccessHandler oauthAccountProvisioningSuccessHandler(
-            UserService userService,
+    public OAuthAuthenticationSuccessHandler oauthAuthenticationSuccessHandler(
+            UserRepository userRepository,
             PasswordEncoder passwordEncoder
     ) {
-        return new OAuthAccountProvisioningSuccessHandler(userService, passwordEncoder);
+        return new OAuthAuthenticationSuccessHandler(userRepository, passwordEncoder);
     }
 
     @Bean
@@ -64,7 +65,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http,
-            OAuthAccountProvisioningSuccessHandler oauthAccountProvisioningSuccessHandler
+            OAuthAuthenticationSuccessHandler oauthAuthenticationSuccessHandler
     ) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
@@ -83,7 +84,7 @@ public class SecurityConfig {
                 .oauth2Login(oauth -> oauth
                         .loginPage("/login")
                         .userInfoEndpoint(userInfo -> userInfo.userService(oauth2UserService()))
-                        .successHandler(oauthAccountProvisioningSuccessHandler)
+                        .successHandler(oauthAuthenticationSuccessHandler)
                         .failureUrl("/login?oauthError")
                 )
                 .logout(logout -> logout

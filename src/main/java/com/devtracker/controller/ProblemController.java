@@ -8,6 +8,7 @@ import com.devtracker.form.ProblemForm;
 import com.devtracker.services.ProblemService;
 import com.devtracker.services.UserService;
 import com.devtracker.support.EmailNormalizer;
+import com.devtracker.support.Helper;
 import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
@@ -218,37 +219,7 @@ public class ProblemController {
     }
 
     private Optional<User> resolveLoggedInUser(Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return Optional.empty();
-        }
-
-        String email = resolveEmail(authentication);
-        if (email == null || email.isBlank()) {
-            return Optional.empty();
-        }
-
-        return userService.getUserByEmail(email);
-    }
-
-    private String resolveEmail(Authentication authentication) {
-        Object principal = authentication.getPrincipal();
-
-        if (principal instanceof OidcUser oidcUser && oidcUser.getEmail() != null) {
-            return EmailNormalizer.normalize(oidcUser.getEmail());
-        }
-
-        if (principal instanceof OAuth2User oauth2User) {
-            Object email = oauth2User.getAttributes().get("email");
-            if (email instanceof String emailValue && !emailValue.isBlank()) {
-                return EmailNormalizer.normalize(emailValue);
-            }
-        }
-
-        String name = authentication.getName();
-        if (name == null || name.isBlank() || !name.contains("@")) {
-            return null;
-        }
-        return EmailNormalizer.normalize(name);
+        return Helper.getLoggedInUser(authentication, userService);
     }
 
     private void populateFormOptions(Model model) {
@@ -296,7 +267,7 @@ public class ProblemController {
     }
 
     private String accountResolutionMessage(Authentication authentication) {
-        if (resolveEmail(authentication) == null) {
+        if (Helper.getEmailOfLoggedInUser(authentication) == null) {
             if (!(authentication instanceof OAuth2AuthenticationToken token)
                     || !"github".equalsIgnoreCase(token.getAuthorizedClientRegistrationId())) {
                 return "We could not obtain an email from your sign-in provider. Please sign in with the email address registered with Dev Tracker.";
