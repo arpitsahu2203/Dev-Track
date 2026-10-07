@@ -15,6 +15,14 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * Service for generating and managing AI-powered revision reviews for DSA
+ * problems.
+ * Uses Spring AI with Gemini native structured output, providing actionable
+ * revision guidance
+ * without external Python dependencies. Supports revision scheduling and topic
+ * recommendation.
+ */
 @Service
 public class ProblemAiReviewService {
 
@@ -27,22 +35,22 @@ public class ProblemAiReviewService {
             "Undirected Graph", "Weighted Graph", "Graph Traversal", "Shortest Path", "Dijkstra's Algorithm",
             "Bellman-Ford", "Floyd-Warshall", "Minimum Spanning Tree", "Kruskal's Algorithm", "Prim's Algorithm",
             "Strongly Connected Components", "Bridges and Articulation Points", "Eulerian Path", "Hamiltonian Path",
-            "Network Flow"
-    );
+            "Network Flow");
 
     private final ChatClient chatClient;
     private final ProblemAiReviewRepository reviewRepository;
 
     public ProblemAiReviewService(ChatClient.Builder chatClientBuilder, ProblemAiReviewRepository reviewRepository) {
         this.chatClient = chatClientBuilder
-                .defaultSystem("""
-                        You are a supportive DSA revision coach. Use only the supplied problem data.
-                        Never claim certainty about a user's internal reasoning; use careful language such as \"You may have found...\".
-                        Do not invent facts about the problem, external links, or results. Give a detailed but practical learning review.
-                        Explain the recommended approach clearly enough to guide a future retry, without providing full code.
-                        Include likely complexity, realistic pitfalls, and an actionable revision checklist.
-                        Select nextTopics only from the provided approved tags. revisionDays must be between 1 and 30.
-                        """)
+                .defaultSystem(
+                        """
+                                You are a supportive DSA revision coach. Use only the supplied problem data.
+                                Never claim certainty about a user's internal reasoning; use careful language such as \"You may have found...\".
+                                Do not invent facts about the problem, external links, or results. Give a detailed but practical learning review.
+                                Explain the recommended approach clearly enough to guide a future retry, without providing full code.
+                                Include likely complexity, realistic pitfalls, and an actionable revision checklist.
+                                Select nextTopics only from the provided approved tags. revisionDays must be between 1 and 30.
+                                """)
                 .build();
         this.reviewRepository = reviewRepository;
     }
@@ -55,17 +63,19 @@ public class ProblemAiReviewService {
                     .call()
                     .entity(AiProblemReview.class, spec -> spec.useProviderStructuredOutput());
         } catch (RuntimeException exception) {
-            throw new AiReviewGenerationException("Gemini could not create the review. Check GEMINI_API_KEY and your Gemini API quota.", exception);
+            throw new AiReviewGenerationException(
+                    "Gemini could not create the review. Check GEMINI_API_KEY and your Gemini API quota.", exception);
         }
 
         if (generatedReview == null) {
             throw new AiReviewGenerationException("Gemini returned no review. Please try again.", null);
         }
 
-        List<String> approvedNextTopics = (generatedReview.nextTopics() == null ? List.<String>of() : generatedReview.nextTopics()).stream()
+        List<String> approvedNextTopics = (generatedReview.nextTopics() == null ? List.<String>of()
+                : generatedReview.nextTopics()).stream()
                 .filter(APPROVED_TAGS::contains)
                 .distinct()
-                .limit(3)
+                .limit(5)
                 .toList();
         int revisionDays = Math.clamp(generatedReview.revisionDays(), 1, 30);
 
@@ -122,8 +132,7 @@ public class ProblemAiReviewService {
                 problem.getTimeTakenToSolve(),
                 clean(problem.getProblemDescription()),
                 problem.getDateSolved(),
-                String.join(", ", APPROVED_TAGS)
-        );
+                String.join(", ", APPROVED_TAGS));
     }
 
     private String clean(String value) {
@@ -132,7 +141,8 @@ public class ProblemAiReviewService {
 
     private String requireText(String value, String fieldName) {
         if (value == null || value.isBlank()) {
-            throw new AiReviewGenerationException("Gemini returned an incomplete " + fieldName + ". Please try again.", null);
+            throw new AiReviewGenerationException("Gemini returned an incomplete " + fieldName + ". Please try again.",
+                    null);
         }
         return value.trim();
     }
